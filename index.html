@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="decor-line"></div>
+  <nav>
+    <div class="logo">Portfolio.</div>
+    <ul class="nav-links">
+      <li><a href="#">Accueil</a></li>
+      <li><a href="#">A propos</a></li>
+      <li><a href="#">Mes projets</a></li>
+      <li><a href="#">Mes compétences</a></li>
+      <li><a href="#">Contact</a></li>
+      <button id="theme-toggle" class="btn-ghost">☀ Light</button>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="hex-side">
+      <div class="hexagon-wrap">
+        <div class="hex-glow"></div>
+        <div class="hexagon">
+          <div class="hexagon-inner">
+            <img src="Photos-1-001/PXL_20250601_133335522.jpg" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="info-container">
+      <div class="info-side">
+        <canvas class="hex-pattern"></canvas>
+        <span class="tag">&#9670; Recherche un stage</span>
+        <h1>Le Hebel<br /><span>Nathan</span></h1>
+        <p class="role">Etudiant en développement logiciel/web</p>
+        <p class="bio">
+          Étudiant en deuxième année d’informatique, curieux, discipliné
+          et désireux de monter en compétences, je suis à la recherche
+          d’un stage dans le domaine du développement logiciel/web.
+        </p>
+
+        <div class="btn-row">
+          <button class="btn btn-primary">Voir mon travail</button>
+          <button class="btn btn-outline">Télécharger mon CV</button>
+          <button class="btn btn-ghost">&#8594; Me contacter</button>
+        </div> 
+    </div>
+    
+    <div class="links">
+      <a href="#"><img src="images/github_logo.png" alt=""></a>
+      <a href="#"><img src="images/linkedin_logo.png" alt=""></a>
+      <a href="#"><img src="images/Logo_of_Twitter.svg.png" alt=""></a>
+      <a href="#"><img src="images/IG-Logo-Silhouette-Free-PNG-Image.png" alt=""></a>
+    </div>
+
+      <!-- <div class="stats">
+        <div class="stat">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Years Exp.</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">40+</span>
+          <span class="stat-label">Projects</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">20+</span>
+          <span class="stat-label">Clients</span>
+        </div>
+      </div> -->
+    <!-- </div> -->
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>&copy; 2026 YourName. All rights reserved.</span>
+    <div class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Twitter</a>
+      <a href="#">Dribbble</a>
+    </div>
+  </footer>
+
+</body>
+<script>
+// Create hexagon background
+for (let j = 0; j < window.innerHeight/40; j++) {
+  for (let i = 0; i < window.innerWidth/45+1; i++) {
+    const hex = document.createElement('div');
+    hex.classList.add('hexagon-bg');
+    if (j % 2 === 0) {
+      hex.style.left = `${(i-0.1)*44}px`;
+    } else {
+      hex.style.left = `${(i-0.1)*44 - 22.5}px`;
+    }
+    hex.style.top = `${j*37}px`;
+    hex.style.animationDelay = `${Math.random() * 5}s`;
+    document.body.appendChild(hex);
+  }
+}
+
+const infoSide = document.querySelector('.info-side');
+const canvas = document.querySelector('.hex-pattern');
+const ctx = canvas.getContext('2d');
+const hexagons = document.querySelectorAll('.hexagon-bg');
+
+
+/* draw hexagons on info-side aligned with the background hexagons */
+function drawAlignedHexagons(mouseX = null, mouseY = null) {
+  const rect = infoSide.getBoundingClientRect(); // get position and size of info-side
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // clear previous drawings
+
+  hexagons.forEach(hex => {
+    const hexRect = hex.getBoundingClientRect(); // get position and size of each hexagon in the backgroud
+
+    // check if this hexagon overlaps the info-side at all
+    if (
+      hexRect.right < rect.left || hexRect.left > rect.right ||
+      hexRect.bottom < rect.top || hexRect.top > rect.bottom
+    ) return; // if not overlapping, skip drawing
+
+    // On récupére x,y abscisses et ordonnées du centre de l'hexagone, et r le rayon
+    const x = hexRect.left - rect.left + hexRect.width / 2;
+    const y = hexRect.top - rect.top + hexRect.height / 2;
+    const r = hexRect.width / 2;
+
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 180) * (60 * i - 30); // -30 to rotate hexagons to match background
+      const px = x + r * Math.cos(angle);
+      const py = y + r * Math.sin(angle);
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    const dist = Math.hypot(mouseX - x, mouseY - y);
+    if (mouseX != null && mouseY!= null && dist < 120) {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      }
+    else {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+    }
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+}
+drawAlignedHexagons();
+
+document.addEventListener('mousemove', (e) => {
+  const rect = infoSide.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+  drawAlignedHexagons(mouseX, mouseY);
+});
+
+hexagons.forEach(hex => {
+  hex.style.animationDuration = `${Math.random() * 10 + 5}s`;
+  // Applying very light opacity variation to create a dynamic background effect
+  hex.style.opacity = 0.3 + Math.random();
+});
+
+setInterval(() => {
+  const randomHex = hexagons[Math.floor(Math.random() * hexagons.length)];
+  let getOpacity = parseFloat(randomHex.style.opacity);
+  randomHex.style.background = `white`;
+  randomHex.style.opacity = 1;
+
+  const randomHex2 = hexagons[Math.floor(Math.random() * hexagons.length)];
+  let getOpacity2 = parseFloat(randomHex2.style.opacity);
+  randomHex2.style.background = `white`;
+  randomHex2.style.opacity = 1;
+
+  const randomHex3 = hexagons[Math.floor(Math.random() * hexagons.length)];
+  let getOpacity3 = parseFloat(randomHex3.style.opacity);
+  randomHex3.style.background = `white`;
+  randomHex3.style.opacity = 1;
+
+  const randomHex4 = hexagons[Math.floor(Math.random() * hexagons.length)];
+  let getOpacity4 = parseFloat(randomHex4.style.opacity);
+  randomHex4.style.background = `white`;
+  randomHex4.style.opacity = 1;
+  setTimeout(() => {
+    randomHex.style.background = `linear-gradient(135deg, #50C878, #145926)`;
+    randomHex.style.opacity = getOpacity; 
+    randomHex2.style.background = `linear-gradient(135deg, #50C878, #145926)`;
+    randomHex2.style.opacity = getOpacity2; 
+    randomHex3.style.background = `linear-gradient(135deg, #50C878, #145926)`;
+    randomHex3.style.opacity = getOpacity3; 
+    randomHex4.style.background = `linear-gradient(135deg, #50C878, #145926)`;
+    randomHex4.style.opacity = getOpacity4; 
+  }, 2000);
+}, 2000);
+
+hexagons.forEach(hex => {
+  hex.dataset.baseOpacity = hex.style.opacity;
+});
+
+document.addEventListener('mousemove', (e) => {
+  hexagons.forEach(hex => {
+    const rect = hex.getBoundingClientRect();
+    const hexX = rect.left + rect.width / 2;
+    const hexY = rect.top + rect.height / 2;
+    const dist = Math.hypot(e.clientX - hexX, e.clientY - hexY);
+    if (dist < 90) {
+      hex.style.opacity = 1 - (dist / 90) * 0.4;
+      hex.style.background = `var(--transform-color)`;
+    } else {
+      hex.style.opacity = hex.dataset.baseOpacity;
+      hex.style.background = `linear-gradient(135deg, var(--accent), var(--accent2))`;
+    }
+  });
+});
+
+// Dark/Light mode toggle
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  const btn = document.getElementById('theme-toggle');
+  btn.textContent = document.body.classList.contains('light') ? '☾ Dark' : '☀ Light';
+});
+
+</script>
+</html>
