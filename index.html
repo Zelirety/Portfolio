@@ -209,8 +209,8 @@ document.addEventListener('mousemove', (e) => {
     const hexX = rect.left + rect.width / 2;
     const hexY = rect.top + rect.height / 2;
     const dist = Math.hypot(e.clientX - hexX, e.clientY - hexY);
-    if (dist < 90) {
-      hex.style.opacity = 1 - (dist / 90) * 0.5;
+    if (dist < 120) {
+      hex.style.opacity = 1 - (dist / 120) * 0.5;
       hex.style.background = `var(--transform-color)`;
     } else {
       hex.style.opacity = hex.dataset.baseOpacity;
