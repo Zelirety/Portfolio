@@ -1,230 +1,1208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio</title>
+  <title>Portfolio – Nathan Le Hebel</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d0d0f;
+      --surface: #161618;
+      --border: #2a2a2e;
+      --accent: #50C878;
+      --accent2: #145926;
+      --text: #f0ede8;
+      --muted: #9c958b;
+      --hex-border1: #07200e;
+      --hex-border2: #2e7e49;
+      --transform-color: #2a936a;
+    }
+
+    body.light {
+      --bg: #f5f5f0;
+      --surface: #e8e8e3;
+      --border: #d0d0cc;
+      --text: #1a1a1a;
+      --muted: #282725;
+      --hex-border1: #346f34;
+      --hex-border2: #9ad39a;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* --- NAVBAR --- */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 60px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: color 0.2s;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.25s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-links a.active {
+      color: var(--accent);
+    }
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    /* --- VIEWPORT --- */
+    #viewport {
+      height: calc(100vh - 60px - 48px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* --- SECTIONS --- */
+    .section {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 2rem 5rem;
+      gap: 4rem;
+      /* initial state: invisible, translated */
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .section.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0) !important;
+    }
+
+    .section.slide-from-right { transform: translateX(80px); }
+    .section.slide-from-left  { transform: translateX(-80px); }
+    .section.slide-out-left   { transform: translateX(-80px); opacity: 0; pointer-events: none; }
+    .section.slide-out-right  { transform: translateX(80px);  opacity: 0; pointer-events: none; }
+
+    /* ========== ACCUEIL ========== */
+    .hex-side {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hexagon-wrap {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      animation: rotation 60s infinite linear;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes rotation {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .hexagon {
+      width: 280px;
+      height: 280px;
+      clip-path: polygon(29.3% 0%, 70.7% 0%, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0% 70.7%, 0% 29.3%);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .hexagon:hover { width: 290px; height: 290px; left: -5px; transition: all 0.2s; cursor: pointer; }
+
+    .hexagon::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--hex-border1), var(--hex-border2));
+      z-index: 0;
+    }
+
+    .hexagon:hover::before {
+      filter: brightness(0) saturate(100%) invert(63%) sepia(60%) saturate(400%) hue-rotate(95deg);
+      transition: 0.2s;
+    }
+
+    .hexagon:hover .hexagon-inner { width: 270px; height: 270px; transition: all 0.2s; }
+
+    .hexagon-inner {
+      width: 260px;
+      height: 260px;
+      clip-path: polygon(29.3% 0%, 70.7% 0%, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0% 70.7%, 0% 29.3%);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      position: absolute;
+    }
+
+    .hexagon-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      animation: rotation 60s linear infinite reverse;
+      scale: 1.1;
+    }
+
+    .hex-glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(80,200,120,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hexagon-bg {
+      position: absolute;
+      z-index: 0;
+      width: 50px;
+      height: 50px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      overflow: hidden;
+      transition: background 1s ease, opacity 0.4s ease;
+    }
+
+    .info-container {
+      z-index: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 1rem;
+      min-width: 50%;
+    }
+
+    .info-side {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      z-index: 1;
+      background: var(--surface);
+      padding: 2em 2em;
+      border-radius: 8px;
+      flex: 1;
+    }
+
+    .hex-pattern {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .info-side > *:not(canvas) { position: relative; z-index: 1; }
+
+    .tag {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 3.5vw, 3rem);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    h1 span { color: var(--accent); }
+
+    .role { font-size: 0.95rem; color: var(--muted); font-weight: 300; letter-spacing: 0.05em; }
+
+    .bio {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 380px;
+      border-left: 2px solid var(--border);
+      padding-left: 1rem;
+    }
+
+    .btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.4rem; }
+
+    .btn {
+      padding: 0.6rem 1.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      border-radius: 2px;
+    }
+
+    .btn-primary { background: var(--accent); color: #0d0d0f; }
+    .btn-primary:hover { background: var(--accent2); color: #fff; transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid transparent; padding-left: 0.5rem; }
+    .btn-ghost:hover { color: var(--text); }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .links a {
+      text-decoration: none;
+      background-color: var(--surface);
+      border-radius: 8px;
+      width: 75px;
+      height: 75px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .links a:hover { border: 1px solid var(--accent); }
+
+    .links a img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      transition: filter 0.2s;
+    }
+
+    .links a:hover img {
+      filter: brightness(0) saturate(100%) invert(63%) sepia(60%) saturate(400%) hue-rotate(95deg);
+    }
+
+    /* ========== A PROPOS ========== */
+    #section-apropos {
+      grid-template-columns: 1fr 1.4fr;
+    }
+
+    .apropos-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .apropos-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .apropos-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(80,200,120,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .apropos-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #0d0d0f;
+      font-weight: 900;
+    }
+
+    .apropos-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--text);
+    }
+
+    .apropos-detail {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .apropos-badge {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background: rgba(80,200,120,0.1);
+      border: 1px solid rgba(80,200,120,0.3);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .apropos-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .apropos-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .apropos-content h2 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .apropos-content p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .apropos-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      border-left: 2px solid var(--border);
+      padding-left: 1.2rem;
+    }
+
+    .timeline-item {
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.55rem;
+      top: 0.35rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+
+    .timeline-year {
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .timeline-title {
+      font-size: 0.88rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .timeline-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* ========== PROJETS ========== */
+    #section-projets {
+      grid-template-columns: 1fr;
+      align-items: start;
+      padding-top: 3rem;
+    }
+
+    .projets-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1.5rem;
+    }
+
+    .projets-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--text);
+    }
+
+    .projets-header h2 em { font-style: normal; color: var(--accent); }
+
+    .projets-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .projet-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .projet-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      transform-origin: left;
+    }
+
+    .projet-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .projet-card:hover::after { transform: scaleX(1); }
+
+    .projet-tag {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .projet-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    .projet-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    .projet-tech {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: auto;
+      padding-top: 0.5rem;
+    }
+
+    .tech-chip {
+      padding: 0.2rem 0.6rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ========== COMPETENCES ========== */
+    #section-competences {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+      padding-top: 2.5rem;
+    }
+
+    .competences-left h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .competences-left h2 em { font-style: normal; color: var(--accent); }
+
+    .competences-left p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
+
+    .skill-group { margin-bottom: 1.2rem; }
+
+    .skill-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.05em;
+    }
+
+    .skill-label span { color: var(--accent); font-size: 0.72rem; }
+
+    .skill-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .skill-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      border-radius: 2px;
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .competences-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .comp-section-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+    }
+
+    .chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .chip {
+      padding: 0.4rem 0.9rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.78rem;
+      color: var(--text);
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ========== CONTACT ========== */
+    #section-contact {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+
+    .contact-left h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--text);
+      margin-bottom: 0.8rem;
+      line-height: 1.2;
+    }
+
+    .contact-left h2 em { font-style: normal; color: var(--accent); }
+    .contact-left p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
+
+    .contact-info { display: flex; flex-direction: column; gap: 0.7rem; }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .contact-icon {
+      width: 36px; height: 36px;
+      border-radius: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .contact-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .form-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .form-input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.7rem 1rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      transition: border-color 0.2s;
+      outline: none;
+      resize: none;
+    }
+
+    .form-input:focus { border-color: var(--accent); }
+
+    /* --- FOOTER --- */
+    footer {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      background-color: var(--bg);
+      position: relative;
+      z-index: 10;
+    }
+
+    footer a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--accent); }
+
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    .decor-line {
+      position: fixed;
+      left: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+      opacity: 0.4;
+      z-index: 5;
+      pointer-events: none;
+    }
+  </style>
 </head>
-<body class="index">
+<body>
   <div class="decor-line"></div>
+
   <nav>
     <div class="logo">Portfolio.</div>
     <ul class="nav-links">
-      <li><a href="#">Accueil</a></li>
-      <li><a href="Apropos.html">A propos</a></li>
-      <li><a href="#">Mes projets</a></li>
-      <li><a href="#">Mes compétences</a></li>
-      <li><a href="#">Contact</a></li>
-      <button id="theme-toggle" class="btn-ghost">☀ Light</button>
+      <li><a href="#" data-section="accueil" class="active">Accueil</a></li>
+      <li><a href="#" data-section="apropos">À propos</a></li>
+      <li><a href="#" data-section="projets">Mes projets</a></li>
+      <li><a href="#" data-section="competences">Mes compétences</a></li>
+      <li><a href="#" data-section="contact">Contact</a></li>
+      <button id="theme-toggle" class="btn btn-ghost">☀ Light</button>
     </ul>
   </nav>
 
-  <main>
-    <div class="hex-side">
-      <div class="hexagon-wrap">
-        <div class="hex-glow"></div>
-        <div class="hexagon">
-          <div class="hexagon-inner">
-            <img src="Photos-1-001/PXL_20250601_133335522.jpg" alt="">
+  <div id="viewport">
+
+    <!-- ===== ACCUEIL ===== -->
+    <section class="section active" id="section-accueil">
+      <div class="hex-side">
+        <div class="hexagon-wrap">
+          <div class="hex-glow"></div>
+          <div class="hexagon">
+            <div class="hexagon-inner">
+              <img src="Photos-1-001/PXL_20250601_133335522.jpg" alt="Nathan Le Hebel" />
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Info -->
-    <div class="info-container">
-      <div class="info-side">
-        <canvas class="hex-pattern"></canvas>
-        <span class="tag">&#9670; Recherche un stage</span>
-        <h1>Le Hebel<br /><span>Nathan</span></h1>
-        <p class="role">Etudiant en développement logiciel/web</p>
-        <p class="bio">
-          Étudiant en deuxième année d’informatique, curieux, discipliné
-          et désireux de monter en compétences, je suis à la recherche
-          d’un stage dans le domaine du développement logiciel/web.
+      <div class="info-container">
+        <div class="info-side">
+          <canvas class="hex-pattern"></canvas>
+          <span class="tag">◆ Recherche un stage</span>
+          <h1>Le Hebel<br /><span>Nathan</span></h1>
+          <p class="role">Étudiant en développement logiciel/web</p>
+          <p class="bio">
+            Étudiant en deuxième année d'informatique, curieux, discipliné
+            et désireux de monter en compétences, je suis à la recherche
+            d'un stage dans le domaine du développement logiciel/web.
+          </p>
+          <div class="btn-row">
+            <button class="btn btn-primary" data-nav="projets">Voir mon travail</button>
+            <button class="btn btn-outline">Télécharger mon CV</button>
+            <button class="btn btn-ghost" data-nav="contact">→ Me contacter</button>
+          </div>
+        </div>
+
+        <div class="links">
+          <a href="#"><img src="images/github_logo.png" alt="GitHub"></a>
+          <a href="#"><img src="images/linkedin_logo.png" alt="LinkedIn"></a>
+          <a href="#"><img src="images/Logo_of_Twitter.svg.png" alt="Twitter"></a>
+          <a href="#"><img src="images/IG-Logo-Silhouette-Free-PNG-Image.png" alt="Instagram"></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== À PROPOS ===== -->
+    <section class="section slide-from-right" id="section-apropos">
+      <div class="apropos-visual">
+        <div class="apropos-card">
+          <div class="apropos-avatar">N</div>
+          <div>
+            <p class="apropos-name">Nathan Le Hebel</p>
+            <p class="apropos-detail" style="margin-top:0.3rem;">Développeur en formation</p>
+          </div>
+          <span class="apropos-badge">◆ Disponible pour un stage</span>
+          <div style="border-top:1px solid var(--border); padding-top:1rem; display:flex; flex-direction:column; gap:0.5rem;">
+            <p style="font-size:0.75rem; color:var(--muted);">📍 France</p>
+            <p style="font-size:0.75rem; color:var(--muted);">🎓 Bac+2 Informatique</p>
+            <p style="font-size:0.75rem; color:var(--muted);">💼 Recherche stage 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="apropos-content">
+        <h2>Passionné par le <em>code</em>,<br />animé par les défis.</h2>
+        <p>
+          Étudiant en deuxième année d'informatique, je développe mes compétences autour du développement web et logiciel.
+          Curieux de nature, j'aime comprendre les systèmes en profondeur et construire des solutions élégantes.
         </p>
-
-        <div class="btn-row">
-          <button class="btn btn-primary">Voir mon travail</button>
-          <button class="btn btn-outline">Télécharger mon CV</button>
-          <button class="btn btn-ghost">&#8594; Me contacter</button>
-        </div> 
-    </div>
-    
-    <div class="links">
-      <a href="#"><img src="images/github_logo.png" alt=""></a>
-      <a href="#"><img src="images/linkedin_logo.png" alt=""></a>
-      <a href="#"><img src="images/Logo_of_Twitter.svg.png" alt=""></a>
-      <a href="#"><img src="images/IG-Logo-Silhouette-Free-PNG-Image.png" alt=""></a>
-    </div>
-
-      <!-- <div class="stats">
-        <div class="stat">
-          <span class="stat-num">5+</span>
-          <span class="stat-label">Years Exp.</span>
+        <p>
+          En dehors du code, je m'intéresse à l'architecture logicielle, aux interfaces utilisateur soignées, et je cherche
+          constamment à affiner mon sens du détail.
+        </p>
+        <div class="apropos-timeline">
+          <div class="timeline-item">
+            <p class="timeline-year">2024 – Auj.</p>
+            <p class="timeline-title">BTS SIO option SLAM</p>
+            <p class="timeline-sub">Développement logiciel & web</p>
+          </div>
+          <div class="timeline-item">
+            <p class="timeline-year">2024</p>
+            <p class="timeline-title">Baccalauréat NSI</p>
+            <p class="timeline-sub">Mention Bien</p>
+          </div>
+          <div class="timeline-item">
+            <p class="timeline-year">2023</p>
+            <p class="timeline-title">Premiers projets personnels</p>
+            <p class="timeline-sub">Python, Web, interfaces graphiques</p>
+          </div>
         </div>
-        <div class="stat">
-          <span class="stat-num">40+</span>
-          <span class="stat-label">Projects</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num">20+</span>
-          <span class="stat-label">Clients</span>
-        </div>
-      </div> -->
-    <!-- </div> -->
-  </main>
+      </div>
+    </section>
 
-  <!-- FOOTER -->
+    <!-- ===== PROJETS ===== -->
+    <section class="section slide-from-right" id="section-projets">
+      <div style="width:100%;">
+        <div class="projets-header">
+          <div>
+            <span class="tag">◆ Réalisations</span>
+            <h2 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--text); margin-top:0.3rem;">Mes <em style="font-style:normal;color:var(--accent);">projets</em></h2>
+          </div>
+          <a href="#" style="font-size:0.78rem; color:var(--accent); text-decoration:none; letter-spacing:0.1em; text-transform:uppercase;">Voir tout →</a>
+        </div>
+        <div class="projets-grid">
+          <div class="projet-card">
+            <span class="projet-tag">Web</span>
+            <p class="projet-title">Portfolio Personnel</p>
+            <p class="projet-desc">Site portfolio interactif avec animations hexagonales, mode sombre/clair et navigation SPA fluide.</p>
+            <div class="projet-tech">
+              <span class="tech-chip">HTML</span>
+              <span class="tech-chip">CSS</span>
+              <span class="tech-chip">JavaScript</span>
+            </div>
+          </div>
+          <div class="projet-card">
+            <span class="projet-tag">Application</span>
+            <p class="projet-title">Projet 2</p>
+            <p class="projet-desc">Description de votre deuxième projet. Expliquez le problème résolu et les technologies utilisées.</p>
+            <div class="projet-tech">
+              <span class="tech-chip">Python</span>
+              <span class="tech-chip">Django</span>
+            </div>
+          </div>
+          <div class="projet-card">
+            <span class="projet-tag">Logiciel</span>
+            <p class="projet-title">Projet 3</p>
+            <p class="projet-desc">Description de votre troisième projet. Mettez en avant vos choix techniques et l'impact du projet.</p>
+            <div class="projet-tech">
+              <span class="tech-chip">Java</span>
+              <span class="tech-chip">SQL</span>
+            </div>
+          </div>
+          <div class="projet-card" style="border-style:dashed; border-color:var(--border); background:transparent; align-items:center; justify-content:center; min-height:140px;">
+            <p style="font-size:0.8rem; color:var(--muted); letter-spacing:0.1em; text-align:center;">+ Nouveau projet<br/><span style="font-size:0.7rem; opacity:0.6;">Bientôt disponible</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COMPÉTENCES ===== -->
+    <section class="section slide-from-right" id="section-competences">
+      <div class="competences-left">
+        <span class="tag">◆ Savoir-faire</span>
+        <h2 style="margin-top:0.3rem;">Mes <em>compétences</em></h2>
+        <p style="margin-top:0.6rem;">Un aperçu de mes maîtrises techniques, développées au fil de projets personnels et de ma formation.</p>
+
+        <div class="skill-group">
+          <div class="skill-label">HTML / CSS <span>80%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-label">JavaScript <span>65%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-label">Python <span>70%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-label">Java <span>55%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="55"></div></div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-label">SQL <span>60%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
+        </div>
+      </div>
+
+      <div class="competences-right">
+        <div>
+          <p class="comp-section-title">Frameworks & Outils</p>
+          <div class="chips-grid">
+            <span class="chip">Git</span>
+            <span class="chip">GitHub</span>
+            <span class="chip">VS Code</span>
+            <span class="chip">Linux</span>
+            <span class="chip">Node.js</span>
+          </div>
+        </div>
+        <div>
+          <p class="comp-section-title">Soft Skills</p>
+          <div class="chips-grid">
+            <span class="chip">Curiosité</span>
+            <span class="chip">Rigueur</span>
+            <span class="chip">Autonomie</span>
+            <span class="chip">Travail d'équipe</span>
+            <span class="chip">Adaptabilité</span>
+          </div>
+        </div>
+        <div>
+          <p class="comp-section-title">Langues</p>
+          <div class="chips-grid">
+            <span class="chip">Français — Natif</span>
+            <span class="chip">Anglais — B2</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section class="section slide-from-right" id="section-contact">
+      <div class="contact-left">
+        <span class="tag">◆ Restons en contact</span>
+        <h2 style="margin-top:0.5rem;">Une <em>opportunité</em><br />à me proposer ?</h2>
+        <p>Je suis ouvert aux offres de stage, aux projets collaboratifs et aux échanges. N'hésitez pas à me contacter !</p>
+        <div class="contact-info">
+          <div class="contact-row">
+            <span class="contact-icon">✉</span>
+            <span>votre.email@exemple.com</span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-icon">📍</span>
+            <span>France</span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-icon">💼</span>
+            <span>Disponible dès maintenant</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <p style="font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--text); margin-bottom:0.5rem;">Envoyez-moi un message</p>
+        <div class="form-group">
+          <label class="form-label">Nom</label>
+          <input type="text" class="form-input" placeholder="Votre nom" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="votre@email.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-input" rows="4" placeholder="Votre message..."></textarea>
+        </div>
+        <button class="btn btn-primary" style="align-self:flex-end;">Envoyer →</button>
+      </div>
+    </section>
+
+  </div><!-- /viewport -->
+
   <footer>
-    <span>&copy; 2026 YourName. All rights reserved.</span>
+    <span>&copy; 2026 Nathan Le Hebel. Tous droits réservés.</span>
     <div class="footer-links">
       <a href="#">GitHub</a>
       <a href="#">LinkedIn</a>
       <a href="#">Twitter</a>
-      <a href="#">Dribbble</a>
+      <a href="#">Instagram</a>
     </div>
   </footer>
 
-</body>
-<script>
-// Create hexagon background
-for (let j = 0; j < window.innerHeight/40; j++) {
-  for (let i = 0; i < window.innerWidth/45+1; i++) {
-    const hex = document.createElement('div');
-    hex.classList.add('hexagon-bg');
-    if (j % 2 === 0) {
-      hex.style.left = `${(i-0.1)*44}px`;
-    } else {
-      hex.style.left = `${(i-0.1)*44 - 22.5}px`;
-    }
-    hex.style.top = `${j*37}px`;
-    hex.style.animationDelay = `${Math.random() * 5}s`;
-    document.body.appendChild(hex);
-  }
-}
-
-const infoSide = document.querySelector('.info-side');
-const canvas = document.querySelector('.hex-pattern');
-const ctx = canvas.getContext('2d');
-const hexagons = document.querySelectorAll('.hexagon-bg');
-
-
-/* draw hexagons on info-side aligned with the background hexagons */
-function drawAlignedHexagons(mouseX = null, mouseY = null) {
-  const rect = infoSide.getBoundingClientRect(); // get position and size of info-side
-  canvas.width = rect.width;
-  canvas.height = rect.height;
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // clear previous drawings
-
-  hexagons.forEach(hex => {
-    const hexRect = hex.getBoundingClientRect(); // get position and size of each hexagon in the backgroud
-
-    // check if this hexagon overlaps the info-side at all
-    if (
-      hexRect.right < rect.left || hexRect.left > rect.right ||
-      hexRect.bottom < rect.top || hexRect.top > rect.bottom
-    ) return; // if not overlapping, skip drawing
-
-    // On récupére x,y abscisses et ordonnées du centre de l'hexagone, et r le rayon
-    const x = hexRect.left - rect.left + hexRect.width / 2;
-    const y = hexRect.top - rect.top + hexRect.height / 2;
-    const r = hexRect.width / 2;
-
-    ctx.beginPath();
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI / 180) * (60 * i - 30); // -30 to rotate hexagons to match background
-      const px = x + r * Math.cos(angle);
-      const py = y + r * Math.sin(angle);
-      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-    }
-    ctx.closePath();
-    const dist = Math.hypot(mouseX - x, mouseY - y);
-    if (mouseX != null && mouseY!= null && dist < 90) {
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  <script>
+    /* ===============================================================
+       HEXAGON BACKGROUND
+    =============================================================== */
+    for (let j = 0; j < window.innerHeight / 40; j++) {
+      for (let i = 0; i < window.innerWidth / 45 + 1; i++) {
+        const hex = document.createElement('div');
+        hex.classList.add('hexagon-bg');
+        hex.style.left = j % 2 === 0 ? `${(i - 0.1) * 44}px` : `${(i - 0.1) * 44 - 22.5}px`;
+        hex.style.top = `${j * 37}px`;
+        hex.style.animationDelay = `${Math.random() * 5}s`;
+        hex.style.opacity = 0.3 + Math.random() * 0.3;
+        document.body.appendChild(hex);
       }
-    else {
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
     }
-    ctx.lineWidth = 1;
-    ctx.stroke();
-  });
-}
-drawAlignedHexagons();
 
-document.addEventListener('mousemove', (e) => {
-  const rect = infoSide.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
-  drawAlignedHexagons(mouseX, mouseY);
-});
+    const hexagons = document.querySelectorAll('.hexagon-bg');
+    hexagons.forEach(hex => { hex.dataset.baseOpacity = hex.style.opacity; });
 
-hexagons.forEach(hex => {
-  hex.style.animationDuration = `${Math.random() * 10 + 5}s`;
-  // Applying very light opacity variation to create a dynamic background effect
-  hex.style.opacity = 0.3 + Math.random();
-});
+    // Flash random hexagons white periodically
+    setInterval(() => {
+      [0, 1, 2, 3].forEach(() => {
+        const h = hexagons[Math.floor(Math.random() * hexagons.length)];
+        const orig = h.dataset.baseOpacity;
+        h.style.background = 'white';
+        h.style.opacity = 1;
+        setTimeout(() => {
+          h.style.background = 'linear-gradient(135deg, var(--accent2), var(--accent))';
+          h.style.opacity = orig;
+        }, 2000);
+      });
+    }, 2000);
 
-setInterval(() => {
-  const randomHex = hexagons[Math.floor(Math.random() * hexagons.length)];
-  let getOpacity = parseFloat(randomHex.style.opacity);
-  randomHex.style.background = `white`;
-  randomHex.style.opacity = 1;
+    // Proximity highlight on mouse move
+    document.addEventListener('mousemove', (e) => {
+      hexagons.forEach(hex => {
+        const rect = hex.getBoundingClientRect();
+        const hx = rect.left + rect.width / 2;
+        const hy = rect.top + rect.height / 2;
+        const dist = Math.hypot(e.clientX - hx, e.clientY - hy);
+        if (dist < 120) {
+          hex.style.opacity = 1 - (dist / 120) * 0.5;
+          hex.style.background = 'var(--transform-color)';
+        } else {
+          hex.style.opacity = hex.dataset.baseOpacity;
+          hex.style.background = 'linear-gradient(135deg, var(--accent2), var(--accent))';
+        }
+      });
+    });
 
-  const randomHex2 = hexagons[Math.floor(Math.random() * hexagons.length)];
-  let getOpacity2 = parseFloat(randomHex2.style.opacity);
-  randomHex2.style.background = `white`;
-  randomHex2.style.opacity = 1;
+    /* ===============================================================
+       HEX CANVAS PATTERN (info-side)
+    =============================================================== */
+    const infoSide = document.querySelector('.info-side');
+    const canvas = document.querySelector('.hex-pattern');
+    const ctx = canvas.getContext('2d');
 
-  const randomHex3 = hexagons[Math.floor(Math.random() * hexagons.length)];
-  let getOpacity3 = parseFloat(randomHex3.style.opacity);
-  randomHex3.style.background = `white`;
-  randomHex3.style.opacity = 1;
-
-  const randomHex4 = hexagons[Math.floor(Math.random() * hexagons.length)];
-  let getOpacity4 = parseFloat(randomHex4.style.opacity);
-  randomHex4.style.background = `white`;
-  randomHex4.style.opacity = 1;
-  setTimeout(() => {
-    randomHex.style.background = `linear-gradient(135deg, #50C878, #145926)`;
-    randomHex.style.opacity = getOpacity; 
-    randomHex2.style.background = `linear-gradient(135deg, #50C878, #145926)`;
-    randomHex2.style.opacity = getOpacity2; 
-    randomHex3.style.background = `linear-gradient(135deg, #50C878, #145926)`;
-    randomHex3.style.opacity = getOpacity3; 
-    randomHex4.style.background = `linear-gradient(135deg, #50C878, #145926)`;
-    randomHex4.style.opacity = getOpacity4; 
-  }, 2000);
-}, 2000);
-
-hexagons.forEach(hex => {
-  hex.dataset.baseOpacity = hex.style.opacity;
-});
-
-document.addEventListener('mousemove', (e) => {
-  hexagons.forEach(hex => {
-    const rect = hex.getBoundingClientRect();
-    const hexX = rect.left + rect.width / 2;
-    const hexY = rect.top + rect.height / 2;
-    const dist = Math.hypot(e.clientX - hexX, e.clientY - hexY);
-    if (dist < 120) {
-      hex.style.opacity = 1 - (dist / 120) * 0.5;
-      hex.style.background = `var(--transform-color)`;
-    } else {
-      hex.style.opacity = hex.dataset.baseOpacity;
-      hex.style.background = `linear-gradient(135deg, var(--accent), var(--accent2))`;
+    function drawAlignedHexagons(mouseX = null, mouseY = null) {
+      const rect = infoSide.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hexagons.forEach(hex => {
+        const hexRect = hex.getBoundingClientRect();
+        if (hexRect.right < rect.left || hexRect.left > rect.right ||
+            hexRect.bottom < rect.top || hexRect.top > rect.bottom) return;
+        const x = hexRect.left - rect.left + hexRect.width / 2;
+        const y = hexRect.top - rect.top + hexRect.height / 2;
+        const r = hexRect.width / 2;
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI / 180) * (60 * i - 30);
+          const px = x + r * Math.cos(angle);
+          const py = y + r * Math.sin(angle);
+          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        const dist = mouseX != null ? Math.hypot(mouseX - x, mouseY - y) : Infinity;
+        ctx.strokeStyle = dist < 90 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.02)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
     }
-  });
-});
 
-// Dark/Light mode toggle
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  document.body.classList.toggle('light');
-  const btn = document.getElementById('theme-toggle');
-  btn.textContent = document.body.classList.contains('light') ? '☾ Dark' : '☀ Light';
-});
+    drawAlignedHexagons();
+    document.addEventListener('mousemove', (e) => {
+      const rect = infoSide.getBoundingClientRect();
+      drawAlignedHexagons(e.clientX - rect.left, e.clientY - rect.top);
+    });
 
-</script>
+    /* ===============================================================
+       SPA NAVIGATION
+    =============================================================== */
+    const sectionOrder = ['accueil', 'apropos', 'projets', 'competences', 'contact'];
+    let currentSection = 'accueil';
+    let isTransitioning = false;
+
+    function navigateTo(targetId) {
+      if (targetId === currentSection || isTransitioning) return;
+      isTransitioning = true;
+
+      const currentEl = document.getElementById(`section-${currentSection}`);
+      const targetEl  = document.getElementById(`section-${targetId}`);
+
+      const currentIdx = sectionOrder.indexOf(currentSection);
+      const targetIdx  = sectionOrder.indexOf(targetId);
+      const goingRight = targetIdx > currentIdx;
+
+      // Set starting position of incoming section
+      targetEl.classList.remove('slide-from-right', 'slide-from-left', 'slide-out-left', 'slide-out-right');
+      targetEl.classList.add(goingRight ? 'slide-from-right' : 'slide-from-left');
+      targetEl.style.opacity = '0';
+
+      // Force reflow
+      void targetEl.offsetWidth;
+
+      // Slide current out
+      currentEl.classList.remove('active');
+      currentEl.classList.add(goingRight ? 'slide-out-left' : 'slide-out-right');
+
+      // Slide new in
+      targetEl.classList.remove('slide-from-right', 'slide-from-left');
+      targetEl.classList.add('active');
+
+      // Update nav links
+      document.querySelectorAll('.nav-links a').forEach(a => {
+        a.classList.toggle('active', a.dataset.section === targetId);
+      });
+
+      // Skills animation
+      if (targetId === 'competences') {
+        setTimeout(() => {
+          document.querySelectorAll('.skill-fill').forEach(bar => {
+            bar.style.width = bar.dataset.width + '%';
+          });
+        }, 300);
+      } else {
+        document.querySelectorAll('.skill-fill').forEach(bar => {
+          bar.style.width = '0%';
+        });
+      }
+
+      currentSection = targetId;
+      setTimeout(() => { isTransitioning = false; }, 550);
+    }
+
+    // Nav link clicks
+    document.querySelectorAll('.nav-links a[data-section]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        navigateTo(link.dataset.section);
+      });
+    });
+
+    // Button shortcuts
+    document.querySelectorAll('[data-nav]').forEach(btn => {
+      btn.addEventListener('click', () => navigateTo(btn.dataset.nav));
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      const idx = sectionOrder.indexOf(currentSection);
+      if (e.key === 'ArrowRight' && idx < sectionOrder.length - 1) navigateTo(sectionOrder[idx + 1]);
+      if (e.key === 'ArrowLeft'  && idx > 0)                         navigateTo(sectionOrder[idx - 1]);
+    });
+
+    /* ===============================================================
+       DARK / LIGHT TOGGLE
+    =============================================================== */
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      document.getElementById('theme-toggle').textContent =
+        document.body.classList.contains('light') ? '☾ Dark' : '☀ Light';
+    });
+  </script>
+</body>
 </html>
