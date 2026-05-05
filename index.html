@@ -6,27 +6,30 @@
   <title>Portfolio – Nathan Le Hebel</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
+    /* ================================================================
+       RESET & VARIABLES
+    ================================================================ */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: #0d0d0f;
-      --surface: #161618;
-      --border: #2a2a2e;
-      --accent: #50C878;
-      --accent2: #145926;
-      --text: #f0ede8;
-      --muted: #9c958b;
-      --hex-border1: #07200e;
-      --hex-border2: #2e7e49;
-      --transform-color: #2a936a;
+      --bg:             #0d0d0f;
+      --surface:        #161618;
+      --border:         #2a2a2e;
+      --accent:         #50C878;
+      --accent2:        #145926;
+      --text:           #f0ede8;
+      --muted:          #9c958b;
+      --hex-border1:    #07200e;
+      --hex-border2:    #2e7e49;
+      --transform-color:#2a936a;
     }
 
     body.light {
-      --bg: #f5f5f0;
-      --surface: #e8e8e3;
-      --border: #d0d0cc;
-      --text: #1a1a1a;
-      --muted: #282725;
+      --bg:          #f5f5f0;
+      --surface:     #e8e8e3;
+      --border:      #d0d0cc;
+      --text:        #1a1a1a;
+      --muted:       #282725;
       --hex-border1: #346f34;
       --hex-border2: #9ad39a;
     }
@@ -39,7 +42,30 @@
       font-family: 'DM Sans', sans-serif;
     }
 
-    /* --- NAVBAR --- */
+    /* ================================================================
+       UTILITAIRES
+    ================================================================ */
+
+    /* Remplace tous les `em { font-style:normal; color:var(--accent) }`
+       répétés 4× et les `h1 span { color:var(--accent) }` */
+    .accent { color: var(--accent); font-style: normal; }
+
+    .tag {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ================================================================
+       LAYOUT PRINCIPAL
+    ================================================================ */
+    nav, #viewport, footer { position: relative; z-index: 10; }
+
+    /* ================================================================
+       NAVBAR
+    ================================================================ */
     nav {
       display: flex;
       align-items: center;
@@ -48,8 +74,12 @@
       height: 60px;
       border-bottom: 1px solid var(--border);
       background: var(--bg);
-      position: relative;
-      z-index: 10;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
     }
 
     .logo {
@@ -81,60 +111,57 @@
     .nav-links a::after {
       content: '';
       position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 1px;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
       background: var(--accent);
       transition: width 0.25s;
     }
 
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover       { color: var(--text); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+    .nav-links a.active      { color: var(--accent); }
 
-    .nav-links a.active {
-      color: var(--accent);
-    }
-    .nav-links a.active::after {
-      width: 100%;
-    }
-
-    /* --- VIEWPORT --- */
+    /* ================================================================
+       VIEWPORT & SECTIONS
+    ================================================================ */
     #viewport {
       height: calc(100vh - 60px - 48px);
       position: relative;
       overflow: hidden;
     }
 
-    /* --- SECTIONS --- */
     .section {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: center;
       padding: 2rem 5rem;
       gap: 4rem;
-      /* initial state: invisible, translated */
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
     }
 
-    .section.active {
-      opacity: 1;
-      pointer-events: all;
-      transform: translateX(0) !important;
-    }
-
+    .section.active         { opacity: 1; pointer-events: all; transform: translateX(0) !important; }
     .section.slide-from-right { transform: translateX(80px); }
     .section.slide-from-left  { transform: translateX(-80px); }
     .section.slide-out-left   { transform: translateX(-80px); opacity: 0; pointer-events: none; }
     .section.slide-out-right  { transform: translateX(80px);  opacity: 0; pointer-events: none; }
 
-    /* ========== ACCUEIL ========== */
+    /* Surcharges de grille par section */
+    #section-apropos     { grid-template-columns: 1fr 1.4fr; }
+    #section-projets     { grid-template-columns: 1fr; align-items: start; padding-top: 3rem; }
+    #section-competences { align-items: start; padding-top: 2.5rem; }
+    #section-contact     { align-items: center; }
+
+    /* ================================================================
+       SECTION ACCUEIL — HEXAGONE
+    ================================================================ */
+    @keyframes float    { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
     .hex-side {
       display: flex;
       justify-content: center;
@@ -145,35 +172,32 @@
 
     .hexagon-wrap {
       position: relative;
-      width: 280px;
-      height: 280px;
+      width: 280px; height: 280px;
       animation: rotation 60s infinite linear;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
-    @keyframes rotation {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+    .hex-glow {
+      position: absolute;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(80,200,120,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     .hexagon {
-      width: 280px;
-      height: 280px;
+      width: 280px; height: 280px;
       clip-path: polygon(29.3% 0%, 70.7% 0%, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0% 70.7%, 0% 29.3%);
-      background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
       animation: float 4s ease-in-out infinite;
+      cursor: pointer;
+      transition: width 0.2s, height 0.2s;
     }
 
-    .hexagon:hover { width: 290px; height: 290px; left: -5px; transition: all 0.2s; cursor: pointer; }
+    .hexagon:hover { width: 290px; height: 290px; }
 
     .hexagon::before {
       content: '';
@@ -181,56 +205,36 @@
       inset: 0;
       background: linear-gradient(135deg, var(--hex-border1), var(--hex-border2));
       z-index: 0;
+      transition: filter 0.2s;
     }
 
     .hexagon:hover::before {
       filter: brightness(0) saturate(100%) invert(63%) sepia(60%) saturate(400%) hue-rotate(95deg);
-      transition: 0.2s;
     }
 
-    .hexagon:hover .hexagon-inner { width: 270px; height: 270px; transition: all 0.2s; }
-
     .hexagon-inner {
-      width: 260px;
-      height: 260px;
+      width: 260px; height: 260px;
       clip-path: polygon(29.3% 0%, 70.7% 0%, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0% 70.7%, 0% 29.3%);
       background: var(--surface);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
-      color: var(--muted);
       position: absolute;
+      transition: width 0.2s, height 0.2s;
     }
 
+    .hexagon:hover .hexagon-inner { width: 270px; height: 270px; }
+
     .hexagon-inner img {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
       animation: rotation 60s linear infinite reverse;
       scale: 1.1;
     }
 
-    .hex-glow {
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(80,200,120,0.1) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .hexagon-bg {
-      position: absolute;
-      z-index: 0;
-      width: 50px;
-      height: 50px;
-      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      overflow: hidden;
-      transition: background 1s ease, opacity 0.4s ease;
-    }
-
+    /* ================================================================
+       SECTION ACCUEIL — INFOS
+    ================================================================ */
     .info-container {
       z-index: 1;
       display: flex;
@@ -245,31 +249,22 @@
       display: flex;
       flex-direction: column;
       gap: 0.3rem;
-      z-index: 1;
       background: var(--surface);
-      padding: 2em 2em;
+      padding: 2em;
       border-radius: 8px;
       flex: 1;
     }
 
+    /* Le canvas de fond est en position absolute, le contenu par-dessus */
+    .info-side > *:not(canvas) { position: relative; z-index: 1; }
+
     .hex-pattern {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       border-radius: 8px;
       pointer-events: none;
       z-index: 0;
-    }
-
-    .info-side > *:not(canvas) { position: relative; z-index: 1; }
-
-    .tag {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 500;
     }
 
     h1 {
@@ -280,9 +275,12 @@
       color: var(--text);
     }
 
-    h1 span { color: var(--accent); }
-
-    .role { font-size: 0.95rem; color: var(--muted); font-weight: 300; letter-spacing: 0.05em; }
+    .role {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
 
     .bio {
       font-size: 0.88rem;
@@ -308,12 +306,12 @@
       border-radius: 2px;
     }
 
-    .btn-primary { background: var(--accent); color: #0d0d0f; }
-    .btn-primary:hover { background: var(--accent2); color: #fff; transform: translateY(-2px); }
-    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid transparent; padding-left: 0.5rem; }
-    .btn-ghost:hover { color: var(--text); }
+    .btn-primary  { background: var(--accent); color: #0d0d0f; }
+    .btn-primary:hover  { background: var(--accent2); color: #fff; transform: translateY(-2px); }
+    .btn-outline  { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover  { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .btn-ghost    { background: transparent; color: var(--muted); border: 1px solid transparent; padding-left: 0.5rem; }
+    .btn-ghost:hover    { color: var(--text); }
 
     .links {
       display: flex;
@@ -326,19 +324,17 @@
       text-decoration: none;
       background-color: var(--surface);
       border-radius: 8px;
-      width: 75px;
-      height: 75px;
+      width: 75px; height: 75px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s;
+      transition: border 0.2s;
     }
 
     .links a:hover { border: 1px solid var(--accent); }
 
     .links a img {
-      width: 50px;
-      height: 50px;
+      width: 50px; height: 50px;
       object-fit: contain;
       filter: brightness(0) invert(1);
       transition: filter 0.2s;
@@ -348,11 +344,9 @@
       filter: brightness(0) saturate(100%) invert(63%) sepia(60%) saturate(400%) hue-rotate(95deg);
     }
 
-    /* ========== A PROPOS ========== */
-    #section-apropos {
-      grid-template-columns: 1fr 1.4fr;
-    }
-
+    /* ================================================================
+       SECTION À PROPOS
+    ================================================================ */
     .apropos-visual {
       display: flex;
       align-items: center;
@@ -364,8 +358,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 2.5rem;
-      width: 100%;
-      max-width: 320px;
+      width: 100%; max-width: 320px;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
@@ -373,6 +366,7 @@
       overflow: hidden;
     }
 
+    /* Lueur décorative en haut à droite */
     .apropos-card::before {
       content: '';
       position: absolute;
@@ -383,8 +377,7 @@
     }
 
     .apropos-avatar {
-      width: 80px;
-      height: 80px;
+      width: 80px; height: 80px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent2), var(--accent));
       display: flex;
@@ -396,18 +389,8 @@
       font-weight: 900;
     }
 
-    .apropos-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      color: var(--text);
-    }
-
-    .apropos-detail {
-      font-size: 0.78rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+    .apropos-name   { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--text); }
+    .apropos-detail { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.3rem; }
 
     .apropos-badge {
       display: inline-block;
@@ -420,6 +403,16 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
     }
+
+    .apropos-card-meta {
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .apropos-card-meta p { font-size: 0.75rem; color: var(--muted); }
 
     .apropos-content {
       display: flex;
@@ -435,17 +428,9 @@
       line-height: 1.2;
     }
 
-    .apropos-content h2 em {
-      font-style: normal;
-      color: var(--accent);
-    }
+    .apropos-content p { font-size: 0.9rem; color: var(--muted); line-height: 1.8; }
 
-    .apropos-content p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
+    /* Timeline */
     .apropos-timeline {
       display: flex;
       flex-direction: column;
@@ -454,48 +439,25 @@
       padding-left: 1.2rem;
     }
 
-    .timeline-item {
-      position: relative;
-    }
+    .timeline-item { position: relative; }
 
     .timeline-item::before {
       content: '';
       position: absolute;
-      left: -1.55rem;
-      top: 0.35rem;
-      width: 8px;
-      height: 8px;
+      left: -1.55rem; top: 0.35rem;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: var(--accent);
       border: 2px solid var(--bg);
     }
 
-    .timeline-year {
-      font-size: 0.7rem;
-      color: var(--accent);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
+    .timeline-year  { font-size: 0.7rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; }
+    .timeline-title { font-size: 0.88rem; color: var(--text); font-weight: 500; }
+    .timeline-sub   { font-size: 0.78rem; color: var(--muted); }
 
-    .timeline-title {
-      font-size: 0.88rem;
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .timeline-sub {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    /* ========== PROJETS ========== */
-    #section-projets {
-      grid-template-columns: 1fr;
-      align-items: start;
-      padding-top: 3rem;
-    }
-
+    /* ================================================================
+       SECTION PROJETS
+    ================================================================ */
     .projets-header {
       display: flex;
       justify-content: space-between;
@@ -507,9 +469,16 @@
       font-family: 'Playfair Display', serif;
       font-size: 2rem;
       color: var(--text);
+      margin-top: 0.3rem;
     }
 
-    .projets-header h2 em { font-style: normal; color: var(--accent); }
+    .projets-header a {
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
 
     .projets-grid {
       display: grid;
@@ -526,7 +495,7 @@
       flex-direction: column;
       gap: 0.8rem;
       cursor: pointer;
-      transition: all 0.25s;
+      transition: border-color 0.25s, transform 0.25s;
       position: relative;
       overflow: hidden;
     }
@@ -538,36 +507,19 @@
       height: 2px;
       background: linear-gradient(90deg, var(--accent2), var(--accent));
       transform: scaleX(0);
-      transition: transform 0.3s ease;
       transform-origin: left;
+      transition: transform 0.3s ease;
     }
 
-    .projet-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .projet-card:hover::after { transform: scaleX(1); }
+    .projet-card:hover           { border-color: var(--accent); transform: translateY(-3px); }
+    .projet-card:hover::after    { transform: scaleX(1); }
+    .projet-card.dashed          { border-style: dashed; background: transparent; align-items: center; justify-content: center; min-height: 140px; }
 
-    .projet-tag {
-      font-size: 0.68rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 500;
-    }
+    .projet-tag   { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
+    .projet-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--text); }
+    .projet-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
 
-    .projet-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.1rem;
-      color: var(--text);
-    }
-
-    .projet-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
-
-    .projet-tech {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-      margin-top: auto;
-      padding-top: 0.5rem;
-    }
+    .projet-tech { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.5rem; }
 
     .tech-chip {
       padding: 0.2rem 0.6rem;
@@ -579,23 +531,14 @@
       letter-spacing: 0.05em;
     }
 
-    /* ========== COMPETENCES ========== */
-    #section-competences {
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
-      padding-top: 2.5rem;
-    }
+    .projet-placeholder { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.1em; text-align: center; }
+    .projet-placeholder small { font-size: 0.7rem; opacity: 0.6; display: block; }
 
-    .competences-left h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-
-    .competences-left h2 em { font-style: normal; color: var(--accent); }
-
-    .competences-left p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
+    /* ================================================================
+       SECTION COMPÉTENCES
+    ================================================================ */
+    .competences-left h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--text); margin-bottom: 0.5rem; }
+    .competences-left p  { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
 
     .skill-group { margin-bottom: 1.2rem; }
 
@@ -610,12 +553,7 @@
 
     .skill-label span { color: var(--accent); font-size: 0.72rem; }
 
-    .skill-bar {
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
+    .skill-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
 
     .skill-fill {
       height: 100%;
@@ -625,11 +563,7 @@
       transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .competences-right {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
+    .competences-right { display: flex; flex-direction: column; gap: 1rem; }
 
     .comp-section-title {
       font-size: 0.72rem;
@@ -640,12 +574,7 @@
       margin-bottom: 0.6rem;
     }
 
-    .chips-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
+    .chips-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
 
     .chip {
       padding: 0.4rem 0.9rem;
@@ -654,38 +583,21 @@
       border-radius: 4px;
       font-size: 0.78rem;
       color: var(--text);
-      transition: all 0.2s;
+      transition: border-color 0.2s, color 0.2s;
       cursor: default;
     }
 
     .chip:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* ========== CONTACT ========== */
-    #section-contact {
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-    }
-
-    .contact-left h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
-      color: var(--text);
-      margin-bottom: 0.8rem;
-      line-height: 1.2;
-    }
-
-    .contact-left h2 em { font-style: normal; color: var(--accent); }
-    .contact-left p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
+    /* ================================================================
+       SECTION CONTACT
+    ================================================================ */
+    .contact-left h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--text); margin-bottom: 0.8rem; line-height: 1.2; }
+    .contact-left p  { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
 
     .contact-info { display: flex; flex-direction: column; gap: 0.7rem; }
 
-    .contact-row {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
+    .contact-row { display: flex; align-items: center; gap: 0.8rem; font-size: 0.85rem; color: var(--muted); }
 
     .contact-icon {
       width: 36px; height: 36px;
@@ -707,14 +619,16 @@
       gap: 1rem;
     }
 
+    .contact-form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
     .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
 
-    .form-label {
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
+    .form-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 
     .form-input {
       background: var(--bg);
@@ -731,7 +645,11 @@
 
     .form-input:focus { border-color: var(--accent); }
 
-    /* --- FOOTER --- */
+    .contact-form .btn { align-self: flex-end; }
+
+    /* ================================================================
+       FOOTER
+    ================================================================ */
     footer {
       height: 48px;
       display: flex;
@@ -742,43 +660,53 @@
       font-size: 0.72rem;
       color: var(--muted);
       letter-spacing: 0.05em;
-      background-color: var(--bg);
-      position: relative;
-      z-index: 10;
+      background: var(--bg);
     }
 
     footer a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
     footer a:hover { color: var(--accent); }
-
     .footer-links { display: flex; gap: 1.5rem; }
 
+    /* ================================================================
+       DÉCORATION GLOBALE
+    ================================================================ */
     .decor-line {
       position: fixed;
-      left: 2rem;
-      top: 50%;
+      left: 2rem; top: 50%;
       transform: translateY(-50%);
-      width: 1px;
-      height: 120px;
+      width: 1px; height: 120px;
       background: linear-gradient(to bottom, transparent, var(--accent), transparent);
       opacity: 0.4;
       z-index: 5;
       pointer-events: none;
     }
+
+    /* Hexagones du fond */
+    .hexagon-bg {
+      position: absolute;
+      width: 50px; height: 50px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      transition: background 1s ease, opacity 0.4s ease;
+    }
   </style>
 </head>
 <body>
   <div class="decor-line"></div>
+  <div id="hex-bg" style="position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;"></div>
 
   <nav>
     <div class="logo">Portfolio.</div>
-    <ul class="nav-links">
-      <li><a href="#" data-section="accueil" class="active">Accueil</a></li>
-      <li><a href="#" data-section="apropos">À propos</a></li>
-      <li><a href="#" data-section="projets">Mes projets</a></li>
-      <li><a href="#" data-section="competences">Mes compétences</a></li>
-      <li><a href="#" data-section="contact">Contact</a></li>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a data-section="accueil" class="active">Accueil</a></li>
+        <li><a data-section="apropos">À propos</a></li>
+        <li><a data-section="projets">Mes projets</a></li>
+        <li><a data-section="competences">Mes compétences</a></li>
+        <li><a data-section="contact">Contact</a></li>
+      </ul>
       <button id="theme-toggle" class="btn btn-ghost">☀ Light</button>
-    </ul>
+    </div>
   </nav>
 
   <div id="viewport">
@@ -800,7 +728,7 @@
         <div class="info-side">
           <canvas class="hex-pattern"></canvas>
           <span class="tag">◆ Recherche un stage</span>
-          <h1>Le Hebel<br /><span>Nathan</span></h1>
+          <h1>Le Hebel<br /><span class="accent">Nathan</span></h1>
           <p class="role">Étudiant en développement logiciel/web</p>
           <p class="bio">
             Étudiant en deuxième année d'informatique, curieux, discipliné
@@ -830,42 +758,45 @@
           <div class="apropos-avatar">N</div>
           <div>
             <p class="apropos-name">Nathan Le Hebel</p>
-            <p class="apropos-detail" style="margin-top:0.3rem;">Développeur en formation</p>
+            <p class="apropos-detail">Développeur en formation</p>
           </div>
           <span class="apropos-badge">◆ Disponible pour un stage</span>
-          <div style="border-top:1px solid var(--border); padding-top:1rem; display:flex; flex-direction:column; gap:0.5rem;">
-            <p style="font-size:0.75rem; color:var(--muted);">📍 France</p>
-            <p style="font-size:0.75rem; color:var(--muted);">🎓 Bac+2 Informatique</p>
-            <p style="font-size:0.75rem; color:var(--muted);">💼 Recherche stage 2025</p>
+          <div class="apropos-card-meta">
+            <p>📍 France</p>
+            <p>🎓 Bac+2 Informatique</p>
+            <p>💼 Recherche stage 2025</p>
           </div>
         </div>
       </div>
 
       <div class="apropos-content">
-        <h2>Passionné par le <em>code</em>,<br />animé par les défis.</h2>
+        <h2>Passionné par le <em class="accent">code</em>,<br />animé par les défis.</h2>
         <p>
-          Étudiant en deuxième année d'informatique, je développe mes compétences autour du développement web et logiciel.
-          Curieux de nature, j'aime comprendre les systèmes en profondeur et construire des solutions élégantes.
+          Étudiant en BTS SIO option SLAM à Rennes, je construis mes compétences autour du développement web et logiciel depuis maintenant deux ans. J'aime comprendre les systèmes en profondeur — pas seulement les faire fonctionner, mais savoir pourquoi ils fonctionnent.
         </p>
         <p>
-          En dehors du code, je m'intéresse à l'architecture logicielle, aux interfaces utilisateur soignées, et je cherche
-          constamment à affiner mon sens du détail.
+          En dehors du code, je m'intéresse à l'architecture logicielle, à la conception d'interfaces soignées, et je joue régulièrement avec des projets perso pour tester ce que j'apprends en cours. Je cherche un stage pour début 2026 où je pourrais contribuer vraiment.
         </p>
         <div class="apropos-timeline">
           <div class="timeline-item">
             <p class="timeline-year">2024 – Auj.</p>
             <p class="timeline-title">BTS SIO option SLAM</p>
-            <p class="timeline-sub">Développement logiciel & web</p>
+            <p class="timeline-sub">Lycée Bréquigny, Rennes — 2ᵉ année</p>
           </div>
           <div class="timeline-item">
             <p class="timeline-year">2024</p>
-            <p class="timeline-title">Baccalauréat NSI</p>
+            <p class="timeline-title">Baccalauréat Général NSI + Maths</p>
             <p class="timeline-sub">Mention Bien</p>
           </div>
           <div class="timeline-item">
             <p class="timeline-year">2023</p>
             <p class="timeline-title">Premiers projets personnels</p>
-            <p class="timeline-sub">Python, Web, interfaces graphiques</p>
+            <p class="timeline-sub">Python, interfaces graphiques Tkinter, scripts d'automatisation</p>
+          </div>
+          <div class="timeline-item">
+            <p class="timeline-year">2022</p>
+            <p class="timeline-title">Découverte de la programmation</p>
+            <p class="timeline-sub">Scratch → Python — premier projet : jeu en console</p>
           </div>
         </div>
       </div>
@@ -873,19 +804,19 @@
 
     <!-- ===== PROJETS ===== -->
     <section class="section slide-from-right" id="section-projets">
-      <div style="width:100%;">
+      <div style="width:100%">
         <div class="projets-header">
           <div>
             <span class="tag">◆ Réalisations</span>
-            <h2 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--text); margin-top:0.3rem;">Mes <em style="font-style:normal;color:var(--accent);">projets</em></h2>
+            <h2>Mes <em class="accent">projets</em></h2>
           </div>
-          <a href="#" style="font-size:0.78rem; color:var(--accent); text-decoration:none; letter-spacing:0.1em; text-transform:uppercase;">Voir tout →</a>
+          <a href="#">Voir tout →</a>
         </div>
         <div class="projets-grid">
           <div class="projet-card">
             <span class="projet-tag">Web</span>
             <p class="projet-title">Portfolio Personnel</p>
-            <p class="projet-desc">Site portfolio interactif avec animations hexagonales, mode sombre/clair et navigation SPA fluide.</p>
+            <p class="projet-desc">Ce portfolio — SPA avec navigation animée, fond hexagonal interactif, mode sombre/clair et canvas dynamique au survol de la souris.</p>
             <div class="projet-tech">
               <span class="tech-chip">HTML</span>
               <span class="tech-chip">CSS</span>
@@ -893,25 +824,47 @@
             </div>
           </div>
           <div class="projet-card">
-            <span class="projet-tag">Application</span>
-            <p class="projet-title">Projet 2</p>
-            <p class="projet-desc">Description de votre deuxième projet. Expliquez le problème résolu et les technologies utilisées.</p>
+            <span class="projet-tag">Application Web</span>
+            <p class="projet-title">GestionStock</p>
+            <p class="projet-desc">Application de gestion de stock pour une petite entreprise fictive. CRUD complet, authentification, et tableau de bord avec statistiques en temps réel.</p>
             <div class="projet-tech">
-              <span class="tech-chip">Python</span>
-              <span class="tech-chip">Django</span>
+              <span class="tech-chip">PHP</span>
+              <span class="tech-chip">MySQL</span>
+              <span class="tech-chip">Bootstrap</span>
             </div>
           </div>
           <div class="projet-card">
             <span class="projet-tag">Logiciel</span>
-            <p class="projet-title">Projet 3</p>
-            <p class="projet-desc">Description de votre troisième projet. Mettez en avant vos choix techniques et l'impact du projet.</p>
+            <p class="projet-title">TaskFlow</p>
+            <p class="projet-desc">Application desktop de gestion de tâches avec interface graphique Tkinter. Sauvegarde locale en JSON, tri par priorité, et rappels par notification.</p>
             <div class="projet-tech">
-              <span class="tech-chip">Java</span>
-              <span class="tech-chip">SQL</span>
+              <span class="tech-chip">Python</span>
+              <span class="tech-chip">Tkinter</span>
+              <span class="tech-chip">JSON</span>
             </div>
           </div>
-          <div class="projet-card" style="border-style:dashed; border-color:var(--border); background:transparent; align-items:center; justify-content:center; min-height:140px;">
-            <p style="font-size:0.8rem; color:var(--muted); letter-spacing:0.1em; text-align:center;">+ Nouveau projet<br/><span style="font-size:0.7rem; opacity:0.6;">Bientôt disponible</span></p>
+          <div class="projet-card">
+            <span class="projet-tag">Jeu / Algo</span>
+            <p class="projet-title">Snake & Pathfinder</p>
+            <p class="projet-desc">Implémentation du jeu Snake en Java avec visualisation de l'algorithme A* pour trouver le chemin optimal vers la nourriture.</p>
+            <div class="projet-tech">
+              <span class="tech-chip">Java</span>
+              <span class="tech-chip">Swing</span>
+              <span class="tech-chip">A*</span>
+            </div>
+          </div>
+          <div class="projet-card">
+            <span class="projet-tag">Script</span>
+            <p class="projet-title">AutoBackup</p>
+            <p class="projet-desc">Script d'automatisation de sauvegardes incrémentales avec compression, rotation des archives et envoi d'un rapport par email.</p>
+            <div class="projet-tech">
+              <span class="tech-chip">Python</span>
+              <span class="tech-chip">Bash</span>
+              <span class="tech-chip">SMTP</span>
+            </div>
+          </div>
+          <div class="projet-card dashed">
+            <p class="projet-placeholder">+ Projet en cours<small>API REST avec Node.js — bientôt</small></p>
           </div>
         </div>
       </div>
@@ -921,8 +874,8 @@
     <section class="section slide-from-right" id="section-competences">
       <div class="competences-left">
         <span class="tag">◆ Savoir-faire</span>
-        <h2 style="margin-top:0.3rem;">Mes <em>compétences</em></h2>
-        <p style="margin-top:0.6rem;">Un aperçu de mes maîtrises techniques, développées au fil de projets personnels et de ma formation.</p>
+        <h2 style="margin-top:0.3rem;">Mes <em class="accent">compétences</em></h2>
+        <p style="margin-top:0.6rem;">Acquises en formation BTS SIO SLAM et renforcées par des projets personnels — des bases solides, et encore beaucoup à explorer.</p>
 
         <div class="skill-group">
           <div class="skill-label">HTML / CSS <span>80%</span></div>
@@ -937,24 +890,39 @@
           <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
         </div>
         <div class="skill-group">
+          <div class="skill-label">PHP <span>60%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
+        </div>
+        <div class="skill-group">
           <div class="skill-label">Java <span>55%</span></div>
           <div class="skill-bar"><div class="skill-fill" data-width="55"></div></div>
         </div>
         <div class="skill-group">
-          <div class="skill-label">SQL <span>60%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
+          <div class="skill-label">SQL (MySQL / PostgreSQL) <span>65%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
         </div>
       </div>
 
       <div class="competences-right">
         <div>
-          <p class="comp-section-title">Frameworks & Outils</p>
+          <p class="comp-section-title">Frameworks & Librairies</p>
           <div class="chips-grid">
-            <span class="chip">Git</span>
-            <span class="chip">GitHub</span>
-            <span class="chip">VS Code</span>
-            <span class="chip">Linux</span>
+            <span class="chip">Bootstrap</span>
+            <span class="chip">Tkinter</span>
+            <span class="chip">Swing</span>
             <span class="chip">Node.js</span>
+            <span class="chip">Express</span>
+          </div>
+        </div>
+        <div>
+          <p class="comp-section-title">Outils & Environnements</p>
+          <div class="chips-grid">
+            <span class="chip">Git & GitHub</span>
+            <span class="chip">VS Code</span>
+            <span class="chip">IntelliJ IDEA</span>
+            <span class="chip">Linux (Debian)</span>
+            <span class="chip">Docker (bases)</span>
+            <span class="chip">Figma</span>
           </div>
         </div>
         <div>
@@ -965,6 +933,7 @@
             <span class="chip">Autonomie</span>
             <span class="chip">Travail d'équipe</span>
             <span class="chip">Adaptabilité</span>
+            <span class="chip">Veille technologique</span>
           </div>
         </div>
         <div>
@@ -981,26 +950,30 @@
     <section class="section slide-from-right" id="section-contact">
       <div class="contact-left">
         <span class="tag">◆ Restons en contact</span>
-        <h2 style="margin-top:0.5rem;">Une <em>opportunité</em><br />à me proposer ?</h2>
-        <p>Je suis ouvert aux offres de stage, aux projets collaboratifs et aux échanges. N'hésitez pas à me contacter !</p>
+        <h2 style="margin-top:0.5rem;">Une <em class="accent">opportunité</em><br />à me proposer ?</h2>
+        <p>Je suis à la recherche d'un stage de 6 à 8 semaines dans le domaine du développement logiciel ou web, idéalement à partir de mai 2026. N'hésitez pas à me contacter, je réponds sous 24h.</p>
         <div class="contact-info">
           <div class="contact-row">
             <span class="contact-icon">✉</span>
-            <span>votre.email@exemple.com</span>
+            <span>nathan.lehebel@exemple.com</span>
           </div>
           <div class="contact-row">
             <span class="contact-icon">📍</span>
-            <span>France</span>
+            <span>Rennes, Bretagne — mobilité possible</span>
           </div>
           <div class="contact-row">
             <span class="contact-icon">💼</span>
-            <span>Disponible dès maintenant</span>
+            <span>Disponible dès mai 2026</span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-icon">🎓</span>
+            <span>Stage BTS SIO SLAM — convention fournie</span>
           </div>
         </div>
       </div>
 
       <div class="contact-form">
-        <p style="font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--text); margin-bottom:0.5rem;">Envoyez-moi un message</p>
+        <p class="contact-form-title">Envoyez-moi un message</p>
         <div class="form-group">
           <label class="form-label">Nom</label>
           <input type="text" class="form-input" placeholder="Votre nom" />
@@ -1013,7 +986,7 @@
           <label class="form-label">Message</label>
           <textarea class="form-input" rows="4" placeholder="Votre message..."></textarea>
         </div>
-        <button class="btn btn-primary" style="align-self:flex-end;">Envoyer →</button>
+        <button class="btn btn-primary">Envoyer →</button>
       </div>
     </section>
 
@@ -1030,74 +1003,61 @@
   </footer>
 
   <script>
-    /* ===============================================================
+    /* ================================================================
        HEXAGON BACKGROUND
-    =============================================================== */
-    for (let j = 0; j < window.innerHeight / 40; j++) {
-      for (let i = 0; i < window.innerWidth / 45 + 1; i++) {
+    ================================================================ */
+    const hexBg = document.getElementById('hex-bg');
+
+    for (let row = 0; row < Math.ceil(window.innerHeight / 37); row++) {
+      for (let col = 0; col < Math.ceil(window.innerWidth / 44) + 1; col++) {
         const hex = document.createElement('div');
         hex.classList.add('hexagon-bg');
-        hex.style.left = j % 2 === 0 ? `${(i - 0.1) * 44}px` : `${(i - 0.1) * 44 - 22.5}px`;
-        hex.style.top = `${j * 37}px`;
-        hex.style.animationDelay = `${Math.random() * 5}s`;
-        hex.style.opacity = 0.3 + Math.random() * 0.3;
-        document.body.appendChild(hex);
+        hex.style.left = `${(col - 0.1) * 44 - (row % 2 === 1 ? 22.5 : 0)}px`;
+        hex.style.top  = `${row * 37}px`;
+        hex.style.opacity = (0.3 + Math.random() * 0.3).toFixed(2);
+        hex.dataset.baseOpacity = hex.style.opacity;
+        hexBg.appendChild(hex);
       }
     }
 
     const hexagons = document.querySelectorAll('.hexagon-bg');
-    hexagons.forEach(hex => { hex.dataset.baseOpacity = hex.style.opacity; });
 
-    // Flash random hexagons white periodically
+    // Flash aléatoire
     setInterval(() => {
-      [0, 1, 2, 3].forEach(() => {
+      for (let i = 0; i < 4; i++) {
         const h = hexagons[Math.floor(Math.random() * hexagons.length)];
-        const orig = h.dataset.baseOpacity;
         h.style.background = 'white';
-        h.style.opacity = 1;
+        h.style.opacity    = '1';
         setTimeout(() => {
           h.style.background = 'linear-gradient(135deg, var(--accent2), var(--accent))';
-          h.style.opacity = orig;
+          h.style.opacity    = h.dataset.baseOpacity;
         }, 2000);
-      });
+      }
     }, 2000);
 
-    // Proximity highlight on mouse move
-    document.addEventListener('mousemove', (e) => {
-      hexagons.forEach(hex => {
-        const rect = hex.getBoundingClientRect();
-        const hx = rect.left + rect.width / 2;
-        const hy = rect.top + rect.height / 2;
-        const dist = Math.hypot(e.clientX - hx, e.clientY - hy);
-        if (dist < 120) {
-          hex.style.opacity = 1 - (dist / 120) * 0.5;
-          hex.style.background = 'var(--transform-color)';
-        } else {
-          hex.style.opacity = hex.dataset.baseOpacity;
-          hex.style.background = 'linear-gradient(135deg, var(--accent2), var(--accent))';
-        }
-      });
-    });
-
-    /* ===============================================================
-       HEX CANVAS PATTERN (info-side)
-    =============================================================== */
+    /* ================================================================
+       CANVAS PATTERN (info-side) + PROXIMITÉ SOURIS (hexBg)
+       — Les deux sont fusionnés dans un seul listener mousemove
+    ================================================================ */
     const infoSide = document.querySelector('.info-side');
-    const canvas = document.querySelector('.hex-pattern');
-    const ctx = canvas.getContext('2d');
+    const canvas   = document.querySelector('.hex-pattern');
+    const ctx      = canvas.getContext('2d');
 
-    function drawAlignedHexagons(mouseX = null, mouseY = null) {
+    function drawCanvasPattern(mouseX = null, mouseY = null) {
       const rect = infoSide.getBoundingClientRect();
-      canvas.width = rect.width;
+      canvas.width  = rect.width;
       canvas.height = rect.height;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       hexagons.forEach(hex => {
         const hexRect = hex.getBoundingClientRect();
         if (hexRect.right < rect.left || hexRect.left > rect.right ||
             hexRect.bottom < rect.top || hexRect.top > rect.bottom) return;
-        const x = hexRect.left - rect.left + hexRect.width / 2;
-        const y = hexRect.top - rect.top + hexRect.height / 2;
+
+        const x = hexRect.left - rect.left + hexRect.width  / 2;
+        const y = hexRect.top  - rect.top  + hexRect.height / 2;
         const r = hexRect.width / 2;
+
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
           const angle = (Math.PI / 180) * (60 * i - 30);
@@ -1106,6 +1066,7 @@
           i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
         }
         ctx.closePath();
+
         const dist = mouseX != null ? Math.hypot(mouseX - x, mouseY - y) : Infinity;
         ctx.strokeStyle = dist < 90 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.02)';
         ctx.lineWidth = 1;
@@ -1113,17 +1074,32 @@
       });
     }
 
-    drawAlignedHexagons();
+    drawCanvasPattern();
+
     document.addEventListener('mousemove', (e) => {
+      // Proximité hexagones de fond
+      hexagons.forEach(hex => {
+        const r    = hex.getBoundingClientRect();
+        const dist = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
+        if (dist < 120) {
+          hex.style.opacity    = (1 - (dist / 120) * 0.5).toFixed(2);
+          hex.style.background = 'var(--transform-color)';
+        } else {
+          hex.style.opacity    = hex.dataset.baseOpacity;
+          hex.style.background = 'linear-gradient(135deg, var(--accent2), var(--accent))';
+        }
+      });
+
+      // Canvas pattern
       const rect = infoSide.getBoundingClientRect();
-      drawAlignedHexagons(e.clientX - rect.left, e.clientY - rect.top);
+      drawCanvasPattern(e.clientX - rect.left, e.clientY - rect.top);
     });
 
-    /* ===============================================================
-       SPA NAVIGATION
-    =============================================================== */
+    /* ================================================================
+       NAVIGATION SPA
+    ================================================================ */
     const sectionOrder = ['accueil', 'apropos', 'projets', 'competences', 'contact'];
-    let currentSection = 'accueil';
+    let currentSection  = 'accueil';
     let isTransitioning = false;
 
     function navigateTo(targetId) {
@@ -1132,76 +1108,61 @@
 
       const currentEl = document.getElementById(`section-${currentSection}`);
       const targetEl  = document.getElementById(`section-${targetId}`);
+      const goingRight = sectionOrder.indexOf(targetId) > sectionOrder.indexOf(currentSection);
 
-      const currentIdx = sectionOrder.indexOf(currentSection);
-      const targetIdx  = sectionOrder.indexOf(targetId);
-      const goingRight = targetIdx > currentIdx;
-
-      // Set starting position of incoming section
-      targetEl.classList.remove('slide-from-right', 'slide-from-left', 'slide-out-left', 'slide-out-right');
+      // Positionne la section entrante hors champ (sans toucher à opacity — géré par CSS)
+      targetEl.classList.remove('active', 'slide-out-left', 'slide-out-right');
       targetEl.classList.add(goingRight ? 'slide-from-right' : 'slide-from-left');
-      targetEl.style.opacity = '0';
+      void targetEl.offsetWidth; // force reflow
 
-      // Force reflow
-      void targetEl.offsetWidth;
-
-      // Slide current out
+      // Sortie
       currentEl.classList.remove('active');
       currentEl.classList.add(goingRight ? 'slide-out-left' : 'slide-out-right');
 
-      // Slide new in
+      // Entrée
       targetEl.classList.remove('slide-from-right', 'slide-from-left');
       targetEl.classList.add('active');
 
-      // Update nav links
+      // Nav active
       document.querySelectorAll('.nav-links a').forEach(a => {
         a.classList.toggle('active', a.dataset.section === targetId);
       });
 
-      // Skills animation
+      // Barres de compétences
+      const fills = document.querySelectorAll('.skill-fill');
       if (targetId === 'competences') {
-        setTimeout(() => {
-          document.querySelectorAll('.skill-fill').forEach(bar => {
-            bar.style.width = bar.dataset.width + '%';
-          });
-        }, 300);
+        setTimeout(() => fills.forEach(b => { b.style.width = b.dataset.width + '%'; }), 300);
       } else {
-        document.querySelectorAll('.skill-fill').forEach(bar => {
-          bar.style.width = '0%';
-        });
+        fills.forEach(b => { b.style.width = '0%'; });
       }
 
       currentSection = targetId;
       setTimeout(() => { isTransitioning = false; }, 550);
     }
 
-    // Nav link clicks
+    // Liens de nav
     document.querySelectorAll('.nav-links a[data-section]').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateTo(link.dataset.section);
-      });
+      link.addEventListener('click', () => navigateTo(link.dataset.section));
     });
 
-    // Button shortcuts
+    // Boutons raccourcis
     document.querySelectorAll('[data-nav]').forEach(btn => {
       btn.addEventListener('click', () => navigateTo(btn.dataset.nav));
     });
 
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
+    // Clavier
+    document.addEventListener('keydown', e => {
       const idx = sectionOrder.indexOf(currentSection);
       if (e.key === 'ArrowRight' && idx < sectionOrder.length - 1) navigateTo(sectionOrder[idx + 1]);
-      if (e.key === 'ArrowLeft'  && idx > 0)                         navigateTo(sectionOrder[idx - 1]);
+      if (e.key === 'ArrowLeft'  && idx > 0)                        navigateTo(sectionOrder[idx - 1]);
     });
 
-    /* ===============================================================
+    /* ================================================================
        DARK / LIGHT TOGGLE
-    =============================================================== */
+    ================================================================ */
     document.getElementById('theme-toggle').addEventListener('click', () => {
-      document.body.classList.toggle('light');
-      document.getElementById('theme-toggle').textContent =
-        document.body.classList.contains('light') ? '☾ Dark' : '☀ Light';
+      const isLight = document.body.classList.toggle('light');
+      document.getElementById('theme-toggle').textContent = isLight ? '☾ Dark' : '☀ Light';
     });
   </script>
 </body>
