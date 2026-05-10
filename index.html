@@ -5,691 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portfolio – Nathan Le Hebel</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    /* ================================================================
-       RESET & VARIABLES
-    ================================================================ */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --bg:             #0d0d0f;
-      --surface:        #161618;
-      --border:         #2a2a2e;
-      --accent:         #50C878;
-      --accent2:        #145926;
-      --text:           #f0ede8;
-      --muted:          #9c958b;
-      --hex-border1:    #07200e;
-      --hex-border2:    #2e7e49;
-      --transform-color:#2a936a;
-    }
-
-    body.light {
-      --bg:          #f5f5f0;
-      --surface:     #e8e8e3;
-      --border:      #d0d0cc;
-      --text:        #1a1a1a;
-      --muted:       #282725;
-      --hex-border1: #346f34;
-      --hex-border2: #9ad39a;
-    }
-
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    /* ================================================================
-       UTILITAIRES
-    ================================================================ */
-
-    /* Remplace tous les `em { font-style:normal; color:var(--accent) }`
-       répétés 4× et les `h1 span { color:var(--accent) }` */
-    .accent { color: var(--accent); font-style: normal; }
-
-    .tag {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 500;
-    }
-
-    /* ================================================================
-       LAYOUT PRINCIPAL
-    ================================================================ */
-    nav, #viewport, footer { position: relative; z-index: 10; }
-
-    /* ================================================================
-       NAVBAR
-    ================================================================ */
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 3rem;
-      height: 60px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      color: var(--accent);
-      letter-spacing: 0.04em;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2.2rem;
-      list-style: none;
-      align-items: center;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: var(--muted);
-      font-size: 0.82rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-weight: 500;
-      transition: color 0.2s;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px; left: 0;
-      width: 0; height: 1px;
-      background: var(--accent);
-      transition: width 0.25s;
-    }
-
-    .nav-links a:hover       { color: var(--text); }
-    .nav-links a:hover::after,
-    .nav-links a.active::after { width: 100%; }
-    .nav-links a.active      { color: var(--accent); }
-
-    /* ================================================================
-       VIEWPORT & SECTIONS
-    ================================================================ */
-    #viewport {
-      height: calc(100vh - 60px - 48px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .section {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      padding: 2rem 5rem;
-      gap: 4rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-    }
-
-    .section.active         { opacity: 1; pointer-events: all; transform: translateX(0) !important; }
-    .section.slide-from-right { transform: translateX(80px); }
-    .section.slide-from-left  { transform: translateX(-80px); }
-    .section.slide-out-left   { transform: translateX(-80px); opacity: 0; pointer-events: none; }
-    .section.slide-out-right  { transform: translateX(80px);  opacity: 0; pointer-events: none; }
-
-    /* Surcharges de grille par section */
-    #section-apropos     { grid-template-columns: 1fr 1.4fr; }
-    #section-projets     { grid-template-columns: 1fr; align-items: start; padding-top: 3rem; }
-    #section-competences { align-items: start; padding-top: 2.5rem; }
-    #section-contact     { align-items: center; }
-
-    /* ================================================================
-       SECTION ACCUEIL — HEXAGONE
-    ================================================================ */
-    @keyframes float    { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-    @keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-    .hex-side {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hexagon-wrap {
-      position: relative;
-      width: 280px; height: 280px;
-      animation: rotation 60s infinite linear;
-    }
-
-    .hex-glow {
-      position: absolute;
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(80,200,120,0.1) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .hexagon {
-      width: 280px; height: 280px;
-      clip-path: polygon(29.3% 0%, 70.7% 0%, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0% 70.7%, 0% 29.3%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      animation: float 4s ease-in-out infinite;
-      cursor: pointer;
-      transition: width 0.2s, height 0.2s;
-    }
-
-    .hexagon:hover { width: 290px; height: 290px; }
-
-    .hexagon::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, var(--hex-border1), var(--hex-border2));
-      z-index: 0;
-      transition: filter 0.2s;
-    }
-
-    .hexagon:hover::before {
-      filter: brightness(0) saturate(100%) invert(63%) sepia(60%) saturate(400%) hue-rotate(95deg);
-    }
-
-    .hexagon-inner {
-      width: 260px; height: 260px;
-      clip-path: polygon(29.3% 0%, 70.7% 0%, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0% 70.7%, 0% 29.3%);
-      background: var(--surface);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      transition: width 0.2s, height 0.2s;
-    }
-
-    .hexagon:hover .hexagon-inner { width: 270px; height: 270px; }
-
-    .hexagon-inner img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      animation: rotation 60s linear infinite reverse;
-      scale: 1.1;
-    }
-
-    /* ================================================================
-       SECTION ACCUEIL — INFOS
-    ================================================================ */
-    .info-container {
-      z-index: 1;
-      display: flex;
-      flex-direction: row;
-      align-items: stretch;
-      gap: 1rem;
-      min-width: 50%;
-    }
-
-    .info-side {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      background: var(--surface);
-      padding: 2em;
-      border-radius: 8px;
-      flex: 1;
-    }
-
-    /* Le canvas de fond est en position absolute, le contenu par-dessus */
-    .info-side > *:not(canvas) { position: relative; z-index: 1; }
-
-    .hex-pattern {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      border-radius: 8px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.2rem, 3.5vw, 3rem);
-      font-weight: 900;
-      line-height: 1.1;
-      color: var(--text);
-    }
-
-    .role {
-      font-size: 0.95rem;
-      color: var(--muted);
-      font-weight: 300;
-      letter-spacing: 0.05em;
-    }
-
-    .bio {
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 380px;
-      border-left: 2px solid var(--border);
-      padding-left: 1rem;
-    }
-
-    .btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.4rem; }
-
-    .btn {
-      padding: 0.6rem 1.5rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border: none;
-      cursor: pointer;
-      transition: all 0.22s ease;
-      border-radius: 2px;
-    }
-
-    .btn-primary  { background: var(--accent); color: #0d0d0f; }
-    .btn-primary:hover  { background: var(--accent2); color: #fff; transform: translateY(-2px); }
-    .btn-outline  { background: transparent; color: var(--text); border: 1px solid var(--border); }
-    .btn-outline:hover  { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-    .btn-ghost    { background: transparent; color: var(--muted); border: 1px solid transparent; padding-left: 0.5rem; }
-    .btn-ghost:hover    { color: var(--text); }
-
-    .links {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .links a {
-      text-decoration: none;
-      background-color: var(--surface);
-      border-radius: 8px;
-      width: 75px; height: 75px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border 0.2s;
-    }
-
-    .links a:hover { border: 1px solid var(--accent); }
-
-    .links a img {
-      width: 50px; height: 50px;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-      transition: filter 0.2s;
-    }
-
-    .links a:hover img {
-      filter: brightness(0) saturate(100%) invert(63%) sepia(60%) saturate(400%) hue-rotate(95deg);
-    }
-
-    /* ================================================================
-       SECTION À PROPOS
-    ================================================================ */
-    .apropos-visual {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .apropos-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2.5rem;
-      width: 100%; max-width: 320px;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Lueur décorative en haut à droite */
-    .apropos-card::before {
-      content: '';
-      position: absolute;
-      top: -40px; right: -40px;
-      width: 120px; height: 120px;
-      background: radial-gradient(circle, rgba(80,200,120,0.15) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-
-    .apropos-avatar {
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: #0d0d0f;
-      font-weight: 900;
-    }
-
-    .apropos-name   { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--text); }
-    .apropos-detail { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.3rem; }
-
-    .apropos-badge {
-      display: inline-block;
-      padding: 0.3rem 0.8rem;
-      background: rgba(80,200,120,0.1);
-      border: 1px solid rgba(80,200,120,0.3);
-      border-radius: 20px;
-      font-size: 0.72rem;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .apropos-card-meta {
-      border-top: 1px solid var(--border);
-      padding-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .apropos-card-meta p { font-size: 0.75rem; color: var(--muted); }
-
-    .apropos-content {
-      display: flex;
-      flex-direction: column;
-      gap: 1.4rem;
-    }
-
-    .apropos-content h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      font-weight: 900;
-      color: var(--text);
-      line-height: 1.2;
-    }
-
-    .apropos-content p { font-size: 0.9rem; color: var(--muted); line-height: 1.8; }
-
-    /* Timeline */
-    .apropos-timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      border-left: 2px solid var(--border);
-      padding-left: 1.2rem;
-    }
-
-    .timeline-item { position: relative; }
-
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -1.55rem; top: 0.35rem;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      border: 2px solid var(--bg);
-    }
-
-    .timeline-year  { font-size: 0.7rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; }
-    .timeline-title { font-size: 0.88rem; color: var(--text); font-weight: 500; }
-    .timeline-sub   { font-size: 0.78rem; color: var(--muted); }
-
-    /* ================================================================
-       SECTION PROJETS
-    ================================================================ */
-    .projets-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 1.5rem;
-    }
-
-    .projets-header h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: var(--text);
-      margin-top: 0.3rem;
-    }
-
-    .projets-header a {
-      font-size: 0.78rem;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .projets-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-    }
-
-    .projet-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      cursor: pointer;
-      transition: border-color 0.25s, transform 0.25s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .projet-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent2), var(--accent));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-    }
-
-    .projet-card:hover           { border-color: var(--accent); transform: translateY(-3px); }
-    .projet-card:hover::after    { transform: scaleX(1); }
-    .projet-card.dashed          { border-style: dashed; background: transparent; align-items: center; justify-content: center; min-height: 140px; }
-
-    .projet-tag   { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
-    .projet-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--text); }
-    .projet-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
-
-    .projet-tech { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.5rem; }
-
-    .tech-chip {
-      padding: 0.2rem 0.6rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      font-size: 0.68rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
-    .projet-placeholder { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.1em; text-align: center; }
-    .projet-placeholder small { font-size: 0.7rem; opacity: 0.6; display: block; }
-
-    /* ================================================================
-       SECTION COMPÉTENCES
-    ================================================================ */
-    .competences-left h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--text); margin-bottom: 0.5rem; }
-    .competences-left p  { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
-
-    .skill-group { margin-bottom: 1.2rem; }
-
-    .skill-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.78rem;
-      color: var(--text);
-      margin-bottom: 0.4rem;
-      letter-spacing: 0.05em;
-    }
-
-    .skill-label span { color: var(--accent); font-size: 0.72rem; }
-
-    .skill-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-
-    .skill-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent2), var(--accent));
-      border-radius: 2px;
-      width: 0%;
-      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .competences-right { display: flex; flex-direction: column; gap: 1rem; }
-
-    .comp-section-title {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 500;
-      margin-bottom: 0.6rem;
-    }
-
-    .chips-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-
-    .chip {
-      padding: 0.4rem 0.9rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      font-size: 0.78rem;
-      color: var(--text);
-      transition: border-color 0.2s, color 0.2s;
-      cursor: default;
-    }
-
-    .chip:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* ================================================================
-       SECTION CONTACT
-    ================================================================ */
-    .contact-left h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--text); margin-bottom: 0.8rem; line-height: 1.2; }
-    .contact-left p  { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
-
-    .contact-info { display: flex; flex-direction: column; gap: 0.7rem; }
-
-    .contact-row { display: flex; align-items: center; gap: 0.8rem; font-size: 0.85rem; color: var(--muted); }
-
-    .contact-icon {
-      width: 36px; height: 36px;
-      border-radius: 6px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.9rem;
-      flex-shrink: 0;
-    }
-
-    .contact-form {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .contact-form-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.1rem;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-
-    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-
-    .form-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-
-    .form-input {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 0.7rem 1rem;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      transition: border-color 0.2s;
-      outline: none;
-      resize: none;
-    }
-
-    .form-input:focus { border-color: var(--accent); }
-
-    .contact-form .btn { align-self: flex-end; }
-
-    /* ================================================================
-       FOOTER
-    ================================================================ */
-    footer {
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 3rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      background: var(--bg);
-    }
-
-    footer a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
-    footer a:hover { color: var(--accent); }
-    .footer-links { display: flex; gap: 1.5rem; }
-
-    /* ================================================================
-       DÉCORATION GLOBALE
-    ================================================================ */
-    .decor-line {
-      position: fixed;
-      left: 2rem; top: 50%;
-      transform: translateY(-50%);
-      width: 1px; height: 120px;
-      background: linear-gradient(to bottom, transparent, var(--accent), transparent);
-      opacity: 0.4;
-      z-index: 5;
-      pointer-events: none;
-    }
-
-    /* Hexagones du fond */
-    .hexagon-bg {
-      position: absolute;
-      width: 50px; height: 50px;
-      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      transition: background 1s ease, opacity 0.4s ease;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="decor-line"></div>
@@ -753,52 +69,96 @@
 
     <!-- ===== À PROPOS ===== -->
     <section class="section slide-from-right" id="section-apropos">
-      <div class="apropos-visual">
-        <div class="apropos-card">
-          <div class="apropos-avatar">N</div>
-          <div>
-            <p class="apropos-name">Nathan Le Hebel</p>
-            <p class="apropos-detail">Développeur en formation</p>
-          </div>
-          <span class="apropos-badge">◆ Disponible pour un stage</span>
-          <div class="apropos-card-meta">
-            <p>📍 France</p>
-            <p>🎓 Bac+2 Informatique</p>
-            <p>💼 Recherche stage 2025</p>
-          </div>
-        </div>
-      </div>
+      <div class="apropos-grid">
 
-      <div class="apropos-content">
-        <h2>Passionné par le <em class="accent">code</em>,<br />animé par les défis.</h2>
-        <p>
-          Étudiant en BTS SIO option SLAM à Rennes, je construis mes compétences autour du développement web et logiciel depuis maintenant deux ans. J'aime comprendre les systèmes en profondeur — pas seulement les faire fonctionner, mais savoir pourquoi ils fonctionnent.
-        </p>
-        <p>
-          En dehors du code, je m'intéresse à l'architecture logicielle, à la conception d'interfaces soignées, et je joue régulièrement avec des projets perso pour tester ce que j'apprends en cours. Je cherche un stage pour début 2026 où je pourrais contribuer vraiment.
-        </p>
-        <div class="apropos-timeline">
-          <div class="timeline-item">
-            <p class="timeline-year">2024 – Auj.</p>
-            <p class="timeline-title">BTS SIO option SLAM</p>
-            <p class="timeline-sub">Lycée Bréquigny, Rennes — 2ᵉ année</p>
+        <!-- 1 — Vertical (haut-gauche) : Profil -->
+        <div class="apropos-block apropos-block-profil">
+          <span class="tag">● Profil</span>
+          <div class="apropos-idbloc">
+            <div class="apropos-avatar">N</div>
+            <div>
+              <p class="apropos-name">Nathan Le Hebel</p>
+              <p class="apropos-detail">Développeur Full-Stack</p>
+            </div>
           </div>
-          <div class="timeline-item">
-            <p class="timeline-year">2024</p>
-            <p class="timeline-title">Baccalauréat Général NSI + Maths</p>
-            <p class="timeline-sub">Mention Bien</p>
-          </div>
-          <div class="timeline-item">
-            <p class="timeline-year">2023</p>
-            <p class="timeline-title">Premiers projets personnels</p>
-            <p class="timeline-sub">Python, interfaces graphiques Tkinter, scripts d'automatisation</p>
-          </div>
-          <div class="timeline-item">
-            <p class="timeline-year">2022</p>
-            <p class="timeline-title">Découverte de la programmation</p>
-            <p class="timeline-sub">Scratch → Python — premier projet : jeu en console</p>
+          <span class="apropos-badge">Recherche d'alternance 2025-2026</span>
+          <div class="apropos-card-meta">
+            <p>🎂 19 ans (22/09/2006)</p>
+            <p>📍 Lannion, Bretagne</p>
+            <p>🚗 Véhiculé</p>
+            <p>✉ lehebelnathan@gmail.com</p>
+            <p>🎓 BUT Informatique — 2ᵉ année</p>
           </div>
         </div>
+
+        <!-- 2 — Horizontal (haut-droite) : Intro -->
+        <div class="apropos-block apropos-block-intro">
+          <span class="tag">● À propos</span>
+          <h2>Hello <em class="accent">World !</em></h2>
+          <p>
+            Passionné par le développement logiciel et web, je suis un étudiant en informatique à la recherche d'une alternance pour approfondir mes compétences techniques et contribuer à des projets concrets. Curieux, rigoureux et autonome, j'aime relever les défis et apprendre de nouvelles technologies. Mon parcours académique et mes projets personnels m'ont permis d'acquérir une solide base en programmation, que je souhaite mettre à profit dans un environnement professionnel stimulant.
+          </p>
+        </div>
+
+        <!-- 5 — Centre : Stats -->
+        <div class="apropos-block apropos-block-stats">
+          <div class="stat">
+            <p class="stat-value">INNOVATION</p>
+          </div>
+          <div class="stat">
+            <p class="stat-value"><span class="accent">QUALITE</span></p>
+          </div>
+          <div class="stat">
+            <p class="stat-value">COMMUNICATION</p>
+          </div>
+        </div>
+
+        <!-- 3 — Horizontal (bas-gauche) : Expérience -->
+        <div class="apropos-block apropos-block-experience">
+          <span class="tag">● Expérience</span>
+          <div class="experience-wrapper">
+            <button class="exp-arrow prev" type="button" aria-label="Expérience précédente">‹</button>
+            <div class="experience-row">
+
+              <div class="experience-card">
+                <p class="exp-period">Mai 2026 — Juillet 2026.</p>
+                <p class="exp-title">Stage cybersécurité</p>
+                <p class="exp-place">STACEM, Grandchamps</p>
+                <p class="exp-desc">Développement d'outils d'automatisation et de tests de pénétration. Implémentation de solutions de sécurité.</p>
+              </div>
+
+              <div class="experience-card">
+                <p class="exp-period">2020 — Auj.</p>
+                <p class="exp-title">Projets personnels</p>
+                <p class="exp-place">En autonomie</p>
+                <p class="exp-desc"></p>
+              </div>
+
+            </div>
+            <button class="exp-arrow next" type="button" aria-label="Expérience suivante">›</button>
+          </div>
+        </div>
+
+        <!-- 4 — Vertical (bas-droite) : Parcours -->
+        <div class="apropos-block apropos-block-parcours">
+          <span class="tag">● Parcours</span>
+          <div class="apropos-timeline">
+            <div class="timeline-item">
+              <p class="timeline-year">A venir...</p>
+            </div>
+            <div class="timeline-item">
+              <p class="timeline-year">2024 – Auj.</p>
+              <p class="timeline-title">BUT Informatique, IUT de Lannion</p>
+              <p class="timeline-sub"></p>
+            </div>
+            <div class="timeline-item">
+              <p class="timeline-year">2021 - 2024</p>
+              <p class="timeline-title">Bac Général, Lycée Benjamin Franklin</p>
+              <p class="timeline-sub">NSI + Maths — Mention Bien</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -808,7 +168,12 @@
         <div class="projets-header">
           <div>
             <span class="tag">◆ Réalisations</span>
-            <h2>Mes <em class="accent">projets</em></h2>
+            <div class="projets-title-row">
+              <h2>Mes <em class="accent">projets</em></h2>
+              <a href="#" class="github-link" aria-label="GitHub">
+                <img src="images/github_logo.png" alt="GitHub">
+              </a>
+            </div>
           </div>
           <a href="#">Voir tout →</a>
         </div>
@@ -824,43 +189,52 @@
             </div>
           </div>
           <div class="projet-card">
-            <span class="projet-tag">Application Web</span>
-            <p class="projet-title">GestionStock</p>
-            <p class="projet-desc">Application de gestion de stock pour une petite entreprise fictive. CRUD complet, authentification, et tableau de bord avec statistiques en temps réel.</p>
+            <span class="projet-tag">Web</span>
+            <p class="projet-title">Alizon, création d'une marketplace</p>
+            <p class="projet-desc">J’ai mené la conceptualisation et le développement d'un site web de commerce en
+                                    ligne,en groupe de 7 dans le cadre d’un projet universitaire. Nous avons pu appliquer la
+                                    méthode SCRUM pour la gestion des tâches et du groupe, et manipuler avec des
+                                    technologies telles que Git et Jira, et des langages tels que le HTML/CSS/JS, PHP, SQL.</p>
             <div class="projet-tech">
               <span class="tech-chip">PHP</span>
               <span class="tech-chip">MySQL</span>
-              <span class="tech-chip">Bootstrap</span>
+              <span class="tech-chip">HTML</span>
+              <span class="tech-chip">sCSS</span>
+              <span class="tech-chip">JavaScript</span>
+              <span class="tech-chip">Docker</span>
             </div>
           </div>
           <div class="projet-card">
             <span class="projet-tag">Logiciel</span>
-            <p class="projet-title">TaskFlow</p>
-            <p class="projet-desc">Application desktop de gestion de tâches avec interface graphique Tkinter. Sauvegarde locale en JSON, tri par priorité, et rappels par notification.</p>
+            <p class="projet-title">Snake, robot IA</p>
+            <p class="projet-desc">J'ai développé un robot automatisé pour le jeu « Snake » en C, en optimisant le code. J'ai
+                                    utilisé Doxygen pour la documentation.</p>
             <div class="projet-tech">
-              <span class="tech-chip">Python</span>
-              <span class="tech-chip">Tkinter</span>
-              <span class="tech-chip">JSON</span>
+              <span class="tech-chip">C</span>
             </div>
           </div>
           <div class="projet-card">
-            <span class="projet-tag">Jeu / Algo</span>
-            <p class="projet-title">Snake & Pathfinder</p>
-            <p class="projet-desc">Implémentation du jeu Snake en Java avec visualisation de l'algorithme A* pour trouver le chemin optimal vers la nourriture.</p>
+            <span class="projet-tag">DevOps</span>
+            <p class="projet-title">Pipeline automatisée de traitement de fichiers</p>
+            <p class="projet-desc">J’ai conceptualisé et mis en œuvre une pipeline utilisant Bash et PHP, conteneurisée
+                                  avec Docker.</p>
             <div class="projet-tech">
-              <span class="tech-chip">Java</span>
-              <span class="tech-chip">Swing</span>
-              <span class="tech-chip">A*</span>
-            </div>
-          </div>
-          <div class="projet-card">
-            <span class="projet-tag">Script</span>
-            <p class="projet-title">AutoBackup</p>
-            <p class="projet-desc">Script d'automatisation de sauvegardes incrémentales avec compression, rotation des archives et envoi d'un rapport par email.</p>
-            <div class="projet-tech">
-              <span class="tech-chip">Python</span>
               <span class="tech-chip">Bash</span>
-              <span class="tech-chip">SMTP</span>
+              <span class="tech-chip">PHP</span>
+              <span class="tech-chip">Docker</span>
+            </div>
+          </div>
+          <div class="projet-card">
+            <span class="projet-tag">Web</span>
+            <p class="projet-title">Site vitrine pour les JO 2024</p>
+            <p class="projet-desc">J'ai acquis de solides compétences en développement web (HTML/CSS/JS) en
+                                    concevant (Figma), imaginant puis en menant le développement avec une équipe de
+                                    camarades, un site web vitrine pour les JO 2024, en simulant un recueil de besoins pour
+                                    le client, et une présentation du produit.</p>
+            <div class="projet-tech">
+              <span class="tech-chip">HTML</span>
+              <span class="tech-chip">CSS</span>
+              <span class="tech-chip">FIGMA</span>
             </div>
           </div>
           <div class="projet-card dashed">
@@ -951,43 +325,45 @@
       <div class="contact-left">
         <span class="tag">◆ Restons en contact</span>
         <h2 style="margin-top:0.5rem;">Une <em class="accent">opportunité</em><br />à me proposer ?</h2>
-        <p>Je suis à la recherche d'un stage de 6 à 8 semaines dans le domaine du développement logiciel ou web, idéalement à partir de mai 2026. N'hésitez pas à me contacter, je réponds sous 24h.</p>
+        <p>Je suis à la recherche d'une alternance en développement full-stack pour 2025-2026. N'hésitez pas à me contacter, je réponds rapidement.</p>
         <div class="contact-info">
-          <div class="contact-row">
+          <a class="contact-row" href="mailto:lehebelnathan@gmail.com">
             <span class="contact-icon">✉</span>
-            <span>nathan.lehebel@exemple.com</span>
-          </div>
+            <span>lehebelnathan@gmail.com</span>
+          </a>
+          <a class="contact-row" href="tel:+33782766495">
+            <span class="contact-icon">📞</span>
+            <span>07 82 76 64 95</span>
+          </a>
           <div class="contact-row">
             <span class="contact-icon">📍</span>
-            <span>Rennes, Bretagne — mobilité possible</span>
-          </div>
-          <div class="contact-row">
-            <span class="contact-icon">💼</span>
-            <span>Disponible dès mai 2026</span>
+            <span>Lannion, Bretagne</span>
           </div>
           <div class="contact-row">
             <span class="contact-icon">🎓</span>
-            <span>Stage BTS SIO SLAM — convention fournie</span>
+            <span>BUT Informatique — IUT de Lannion</span>
           </div>
         </div>
       </div>
 
-      <div class="contact-form">
+      <form class="contact-form" id="contact-form" action="https://formspree.io/f/maqvlajb" method="POST">
         <p class="contact-form-title">Envoyez-moi un message</p>
         <div class="form-group">
-          <label class="form-label">Nom</label>
-          <input type="text" class="form-input" placeholder="Votre nom" />
+          <label class="form-label" for="cf-name">Nom</label>
+          <input type="text" id="cf-name" name="name" class="form-input" placeholder="Votre nom" required />
         </div>
         <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" placeholder="votre@email.com" />
+          <label class="form-label" for="cf-email">Email</label>
+          <input type="email" id="cf-email" name="email" class="form-input" placeholder="votre@email.com" required />
         </div>
         <div class="form-group">
-          <label class="form-label">Message</label>
-          <textarea class="form-input" rows="4" placeholder="Votre message..."></textarea>
+          <label class="form-label" for="cf-message">Message</label>
+          <textarea id="cf-message" name="message" class="form-input" rows="4" placeholder="Votre message..." required></textarea>
         </div>
-        <button class="btn btn-primary">Envoyer →</button>
-      </div>
+        <input type="hidden" name="_subject" value="Nouveau message depuis le portfolio">
+        <button type="submit" class="btn btn-primary" id="cf-submit">Envoyer →</button>
+        <p class="form-feedback" id="cf-feedback" hidden></p>
+      </form>
     </section>
 
   </div><!-- /viewport -->
@@ -1008,12 +384,15 @@
     ================================================================ */
     const hexBg = document.getElementById('hex-bg');
 
-    for (let row = 0; row < Math.ceil(window.innerHeight / 37); row++) {
-      for (let col = 0; col < Math.ceil(window.innerWidth / 44) + 1; col++) {
+    // Espacement augmenté (44→55, 37→46) → ~36% d'hexagones en moins
+    const HEX_COL = 55;
+    const HEX_ROW = 46;
+    for (let row = 0; row < Math.ceil(window.innerHeight / HEX_ROW); row++) {
+      for (let col = 0; col < Math.ceil(window.innerWidth / HEX_COL) + 1; col++) {
         const hex = document.createElement('div');
         hex.classList.add('hexagon-bg');
-        hex.style.left = `${(col - 0.1) * 44 - (row % 2 === 1 ? 22.5 : 0)}px`;
-        hex.style.top  = `${row * 37}px`;
+        hex.style.left = `${(col - 0.1) * HEX_COL - (row % 2 === 1 ? HEX_COL / 2 : 0)}px`;
+        hex.style.top  = `${row * HEX_ROW}px`;
         hex.style.opacity = (0.3 + Math.random() * 0.3).toFixed(2);
         hex.dataset.baseOpacity = hex.style.opacity;
         hexBg.appendChild(hex);
@@ -1036,63 +415,101 @@
     }, 2000);
 
     /* ================================================================
-       CANVAS PATTERN (info-side) + PROXIMITÉ SOURIS (hexBg)
-       — Les deux sont fusionnés dans un seul listener mousemove
+       CANVAS PATTERN — appliqué à tous les blocs principaux
+       (info-side, apropos-block, projet-card, contact-form)
+       + PROXIMITÉ SOURIS sur les hexagones de fond
     ================================================================ */
-    const infoSide = document.querySelector('.info-side');
-    const canvas   = document.querySelector('.hex-pattern');
-    const ctx      = canvas.getContext('2d');
 
-    function drawCanvasPattern(mouseX = null, mouseY = null) {
-      const rect = infoSide.getBoundingClientRect();
-      canvas.width  = rect.width;
-      canvas.height = rect.height;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Injecte un <canvas class="hex-pattern"> au début de chaque bloc cible
+    ['.info-side', '.apropos-block', '.projet-card', '.contact-form'].forEach(sel => {
+      document.querySelectorAll(sel).forEach(block => {
+        if (block.querySelector(':scope > canvas.hex-pattern')) return;
+        const c = document.createElement('canvas');
+        c.className = 'hex-pattern';
+        block.insertBefore(c, block.firstChild);
+      });
+    });
 
-      hexagons.forEach(hex => {
-        const hexRect = hex.getBoundingClientRect();
-        if (hexRect.right < rect.left || hexRect.left > rect.right ||
-            hexRect.bottom < rect.top || hexRect.top > rect.bottom) return;
+    // Liste { bloc, canvas, contexte }
+    const hexBlocks = Array.from(document.querySelectorAll('canvas.hex-pattern')).map(c => ({
+      block:  c.parentElement,
+      canvas: c,
+      ctx:    c.getContext('2d')
+    }));
 
-        const x = hexRect.left - rect.left + hexRect.width  / 2;
-        const y = hexRect.top  - rect.top  + hexRect.height / 2;
-        const r = hexRect.width / 2;
+    // Cache des positions des hexagones de fond (fixes)
+    const hexCache = Array.from(hexagons).map(hex => {
+      const r = hex.getBoundingClientRect();
+      return { x: r.left, y: r.top, w: r.width, h: r.height, cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+    });
 
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (Math.PI / 180) * (60 * i - 30);
-          const px = x + r * Math.cos(angle);
-          const py = y + r * Math.sin(angle);
-          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    function drawCanvasPattern(mouseClientX = null, mouseClientY = null) {
+      hexBlocks.forEach(({ block, canvas, ctx }) => {
+        const rect = block.getBoundingClientRect();
+        if (rect.width < 1 || rect.height < 1) return;
+
+        canvas.width  = rect.width;
+        canvas.height = rect.height;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const mx = mouseClientX != null ? mouseClientX - rect.left : null;
+        const my = mouseClientY != null ? mouseClientY - rect.top  : null;
+
+        for (let i = 0; i < hexCache.length; i++) {
+          const hp = hexCache[i];
+          if (hp.x + hp.w < rect.left || hp.x > rect.right ||
+              hp.y + hp.h < rect.top  || hp.y > rect.bottom) continue;
+
+          const x = hp.cx - rect.left;
+          const y = hp.cy - rect.top;
+          const r = hp.w / 2;
+
+          ctx.beginPath();
+          for (let k = 0; k < 6; k++) {
+            const a  = (Math.PI / 180) * (60 * k - 30);
+            const px = x + r * Math.cos(a);
+            const py = y + r * Math.sin(a);
+            k === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+
+          const dist = mx != null ? Math.hypot(mx - x, my - y) : Infinity;
+          ctx.strokeStyle = dist < 90 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.02)';
+          ctx.lineWidth   = 1;
+          ctx.stroke();
         }
-        ctx.closePath();
-
-        const dist = mouseX != null ? Math.hypot(mouseX - x, mouseY - y) : Infinity;
-        ctx.strokeStyle = dist < 90 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.02)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
       });
     }
 
     drawCanvasPattern();
 
+    // Throttle avec requestAnimationFrame : limite les MAJ à 60 fps max
+    let lastMouse = null;
+    let rafQueued = false;
     document.addEventListener('mousemove', (e) => {
-      // Proximité hexagones de fond
-      hexagons.forEach(hex => {
-        const r    = hex.getBoundingClientRect();
-        const dist = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
-        if (dist < 120) {
-          hex.style.opacity    = (1 - (dist / 120) * 0.5).toFixed(2);
-          hex.style.background = 'var(--transform-color)';
-        } else {
-          hex.style.opacity    = hex.dataset.baseOpacity;
-          hex.style.background = 'linear-gradient(135deg, var(--accent2), var(--accent))';
-        }
-      });
+      lastMouse = { x: e.clientX, y: e.clientY };
+      if (rafQueued) return;
+      rafQueued = true;
+      requestAnimationFrame(() => {
+        rafQueued = false;
+        const mx = lastMouse.x, my = lastMouse.y;
 
-      // Canvas pattern
-      const rect = infoSide.getBoundingClientRect();
-      drawCanvasPattern(e.clientX - rect.left, e.clientY - rect.top);
+        // Proximité hexagones de fond (utilise le cache)
+        for (let i = 0; i < hexCache.length; i++) {
+          const hp  = hexCache[i];
+          const hex = hexagons[i];
+          const dist = Math.hypot(mx - hp.cx, my - hp.cy);
+          if (dist < 130) {
+            hex.style.opacity    = (1 - (dist / 130) * 0.5).toFixed(2);
+            hex.style.background = 'var(--transform-color)';
+          } else {
+            hex.style.opacity    = hex.dataset.baseOpacity;
+            hex.style.background = 'linear-gradient(135deg, var(--accent2), var(--accent))';
+          }
+        }
+
+        drawCanvasPattern(mx, my);
+      });
     });
 
     /* ================================================================
@@ -1137,7 +554,11 @@
       }
 
       currentSection = targetId;
-      setTimeout(() => { isTransitioning = false; }, 550);
+      setTimeout(() => {
+        isTransitioning = false;
+        // Redessine les canvas patterns (les blocs ont changé de position)
+        drawCanvasPattern();
+      }, 550);
     }
 
     // Liens de nav
@@ -1164,6 +585,96 @@
       const isLight = document.body.classList.toggle('light');
       document.getElementById('theme-toggle').textContent = isLight ? '☾ Dark' : '☀ Light';
     });
+
+    /* ================================================================
+       NAVIGATION DES EXPÉRIENCES (flèches gauche/droite)
+       Affichées seulement si la zone défile (donc plus de 4 cartes).
+    ================================================================ */
+    (function () {
+      const row  = document.querySelector('.experience-row');
+      const prev = document.querySelector('.exp-arrow.prev');
+      const next = document.querySelector('.exp-arrow.next');
+      if (!row || !prev || !next) return;
+
+      function step() {
+        const card = row.querySelector('.experience-card');
+        if (!card) return row.clientWidth;
+        // largeur d'une carte + le gap (0.7rem ≈ 11.2px)
+        return card.getBoundingClientRect().width + 11.2;
+      }
+
+      function update() {
+        const canScroll = row.scrollWidth > row.clientWidth + 1;
+        if (!canScroll) {
+          prev.hidden = true;
+          next.hidden = true;
+          return;
+        }
+        const atStart = row.scrollLeft <= 1;
+        const atEnd   = row.scrollLeft + row.clientWidth >= row.scrollWidth - 1;
+        prev.hidden = atStart;
+        next.hidden = atEnd;
+      }
+
+      prev.addEventListener('click', () => row.scrollBy({ left: -step(), behavior: 'smooth' }));
+      next.addEventListener('click', () => row.scrollBy({ left:  step(), behavior: 'smooth' }));
+      row.addEventListener('scroll', update);
+      window.addEventListener('resize', update);
+      update();
+    })();
+
+    /* ================================================================
+       FORMULAIRE DE CONTACT — envoi via Formspree (fetch AJAX)
+       L'email arrive directement dans la boîte sans ouvrir de client mail.
+    ================================================================ */
+    (function () {
+      const form     = document.getElementById('contact-form');
+      const submit   = document.getElementById('cf-submit');
+      const feedback = document.getElementById('cf-feedback');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submit.disabled = true;
+        submit.textContent = 'Envoi…';
+        submit.classList.remove('btn-success');
+        feedback.hidden = true;
+        feedback.classList.remove('error', 'success');
+
+        try {
+          const response = await fetch(form.action, {
+            method:  'POST',
+            body:    new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          });
+
+          if (response.ok) {
+            // Succès : message dans le bouton pendant 5s
+            form.reset();
+            submit.textContent = '✓ Message envoyé !';
+            submit.classList.add('btn-success');
+            setTimeout(() => {
+              submit.textContent = 'Envoyer →';
+              submit.classList.remove('btn-success');
+              submit.disabled = false;
+            }, 5000);
+            return; // ne pas réactiver tout de suite
+          } else {
+            const data = await response.json().catch(() => ({}));
+            const msg  = data.errors?.map(err => err.message).join(', ') || 'Une erreur est survenue.';
+            feedback.textContent = '✗ ' + msg;
+            feedback.classList.add('error');
+            feedback.hidden = false;
+            submit.textContent = 'Envoyer →';
+          }
+        } catch (err) {
+          feedback.textContent = '✗ Connexion impossible. Réessayez ou écrivez-moi directement.';
+          feedback.classList.add('error');
+          feedback.hidden = false;
+          submit.textContent = 'Envoyer →';
+        }
+        submit.disabled = false;
+      });
+    })();
   </script>
 </body>
 </html>
