@@ -21,7 +21,7 @@
         <li><a data-section="competences">Mes compétences</a></li>
         <li><a data-section="contact">Contact</a></li>
       </ul>
-      <button id="theme-toggle" class="btn btn-ghost">☀ Light</button>
+      <button id="theme-toggle" class="btn btn-ghost"><span>☀ Light</span></button>
     </div>
   </nav>
 
@@ -53,8 +53,8 @@
           </p>
           <div class="btn-row">
             <button class="btn btn-primary" data-nav="projets">Voir mon travail</button>
-            <button class="btn btn-outline">Télécharger mon CV</button>
-            <button class="btn btn-ghost" data-nav="contact">→ Me contacter</button>
+            <button class="btn btn-outline" onclick="window.open('CV_Nathan_Le_Hebel.pdf', '_blank')">Télécharger mon CV</button>
+            <button class="btn btn-ghost" data-nav="contact"><span>→ Me contacter</span></button>
           </div>
         </div>
 
@@ -454,7 +454,25 @@
       return { x: r.left, y: r.top, w: r.width, h: r.height, cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
     });
 
-    function drawCanvasPattern(mouseClientX = null, mouseClientY = null) {
+    // Pulse au clic pour les motifs hexagonaux des blocs (canvas)
+    let clickPulse = null;
+    const CANVAS_PULSE_R  = 150;   // rayon (px) du pulse autour du curseur
+    const CANVAS_PULSE_MS = 550;   // durée du pulse (ms)
+    function triggerCanvasPulse(cx, cy) {
+      clickPulse = { x: cx, y: cy, t0: performance.now() };
+      (function anim() {
+        const m = lastMouse;
+        drawCanvasPattern(m ? m.x : null, m ? m.y : null);
+        if (clickPulse && performance.now() - clickPulse.t0 < CANVAS_PULSE_MS) {
+          requestAnimationFrame(anim);
+        } else {
+          clickPulse = null;
+          drawCanvasPattern(m ? m.x : null, m ? m.y : null);
+        }
+      })();
+    }
+
+    function drawCanvasPattern(mouseClientX = null, mouseClientY = null, border = false) {
       hexBlocks.forEach(({ block, canvas, ctx }) => {
         const rect = block.getBoundingClientRect();
         if (rect.width < 1 || rect.height < 1) return;
@@ -465,7 +483,7 @@
 
         const mx = mouseClientX != null ? mouseClientX - rect.left : null;
         const my = mouseClientY != null ? mouseClientY - rect.top  : null;
-
+        
         for (let i = 0; i < hexCache.length; i++) {
           const hp = hexCache[i];
           if (hp.x + hp.w < rect.left || hp.x > rect.right ||
@@ -485,12 +503,23 @@
           ctx.closePath();
 
           const dist = mx != null ? Math.hypot(mx - x, my - y) : Infinity;
-          ctx.strokeStyle = dist < 90 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.02)';
+          let alpha = dist < 90 ? 0.05 : 0.02;
+          // Pulse au clic : illumine les hexagones du bloc autour du point cliqué
+          if (clickPulse) {
+            const pd   = Math.hypot((clickPulse.x - rect.left) - x, (clickPulse.y - rect.top) - y);
+            const life = 1 - (performance.now() - clickPulse.t0) / CANVAS_PULSE_MS;
+            if (life > 0 && pd < CANVAS_PULSE_R) {
+              const pa = life * (1 - pd / CANVAS_PULSE_R) * 0.9;
+              if (pa > alpha) alpha = pa;
+            }
+          }
+          ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
           ctx.lineWidth   = 1;
           ctx.stroke();
         }
       });
     }
+    
 
     drawCanvasPattern();
 
@@ -521,6 +550,31 @@
 
         drawCanvasPattern(mx, my);
       });
+    });
+
+    document.addEventListener('click', (e) => {
+      triggerCanvasPulse(e.clientX, e.clientY);
+
+      // Pulse des hexagones du fond autour du clic (même esprit que le survol souris)
+      const PULSE_R = 160;   // rayon de l'effet autour du curseur
+      for (let i = 0; i < hexCache.length; i++) {
+        const hp = hexCache[i];
+        const d  = Math.hypot(e.clientX - hp.cx, e.clientY - hp.cy);
+        if (d > PULSE_R) continue;
+        const hex = hexagons[i];
+        setTimeout(() => {
+          // allumage quasi instantané
+          hex.style.transition = 'background 0.08s ease, opacity 0.08s ease';
+          hex.style.background = 'white';
+          hex.style.opacity    = '1';
+          // puis retour en douceur à l'état de base
+          setTimeout(() => {
+            hex.style.transition = 'background 0.7s ease, opacity 0.6s ease';
+            hex.style.background = 'linear-gradient(135deg, var(--accent2), var(--accent))';
+            hex.style.opacity    = hex.dataset.baseOpacity;
+          }, 130);
+        }, d * 0.7);   // léger délai selon la distance = petit effet de propagation
+      }
     });
 
     /* ================================================================
@@ -586,7 +640,7 @@
     ================================================================ */
     document.getElementById('theme-toggle').addEventListener('click', () => {
       const isLight = document.body.classList.toggle('light');
-      document.getElementById('theme-toggle').textContent = isLight ? '☾ Dark' : '☀ Light';
+      document.querySelector('#theme-toggle span').textContent = isLight ? '☾ Dark' : '☀ Light';
     });
 
     /* ================================================================
