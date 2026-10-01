@@ -26,7 +26,16 @@
       --hex-border2: #9ad39a;
     }
 
-    html { font-size: clamp(13px, 2vh, 18.4px); }
+    /* Échelle unique : tout le site est dimensionné en rem, et 1rem suit la
+       taille de la fenêtre (référence : 18.4px pour une fenêtre 1920×920).
+       On prend la plus petite des deux contraintes (largeur / hauteur) pour
+       que la mise en page soit identique sur un portable et un grand écran. */
+    :root {
+      --nav-h:    3.8rem;
+      --footer-h: 3.08rem;
+    }
+
+    html { font-size: max(10px, min(0.9583vw, 2vh)); }
 
     html, body {
       height: 100%;
@@ -65,7 +74,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 3rem;
-      height: clamp(58px, 7.6vh, 74px);
+      height: var(--nav-h);
       border-bottom: 1px solid var(--border);
       background: var(--bg);
     }
@@ -121,7 +130,7 @@
        VIEWPORT & SECTIONS
     ================================================================ */
     #viewport {
-      height: calc(100vh - clamp(58px, 7.6vh, 74px) - clamp(46px, 6.15vh, 60px));
+      height: calc(100vh - var(--nav-h) - var(--footer-h));
       position: relative;
       overflow: hidden;
     }
@@ -160,7 +169,7 @@
     /* ================================================================
        SECTION ACCUEIL — HEXAGONE
     ================================================================ */
-    @keyframes float    { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes float    { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-0.65rem); } }
     @keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     .hex-side {
@@ -173,20 +182,20 @@
 
     .hexagon-wrap {
       position: relative;
-      width: 320px; height: 320px;
+      width: 17.4rem; height: 17.4rem;
       animation: rotation 60s infinite linear;
     }
 
     .hex-glow {
       position: absolute;
-      width: 345px; height: 345px;
+      width: 18.75rem; height: 18.75rem;
       background: radial-gradient(circle, rgba(80,200,120,0.1) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
     }
 
     .hexagon {
-      width: 320px; height: 320px;
+      width: 17.4rem; height: 17.4rem;
       clip-path: polygon(29.3% 0%, 70.7% 0%, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0% 70.7%, 0% 29.3%);
       display: flex;
       align-items: center;
@@ -198,7 +207,7 @@
       transition: width 0.2s, height 0.2s;
     }
 
-    .hexagon:hover { width: 330px; height: 330px; }
+    .hexagon:hover { width: 17.93rem; height: 17.93rem; }
 
     .hexagon::before {
       content: '';
@@ -214,7 +223,7 @@
     }
 
     .hexagon-inner {
-      width: 300px; height: 300px;
+      width: 16.3rem; height: 16.3rem;
       clip-path: polygon(29.3% 0%, 70.7% 0%, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0% 70.7%, 0% 29.3%);
       background: var(--surface);
       display: flex;
@@ -224,7 +233,7 @@
       transition: width 0.2s, height 0.2s;
     }
 
-    .hexagon:hover .hexagon-inner { width: 310px; height: 310px; }
+    .hexagon:hover .hexagon-inner { width: 16.85rem; height: 16.85rem; }
 
     .hexagon-inner img {
       width: 100%; height: 100%;
@@ -287,7 +296,7 @@
       font-size: 0.96rem;
       color: var(--muted);
       line-height: 1.7;
-      max-width: 410px;
+      max-width: 22.3rem;
       border-left: 2px solid var(--border);
       padding-left: 1rem;
     }
@@ -403,7 +412,7 @@
       text-decoration: none;
       background-color: var(--surface);
       border-radius: 8px;
-      width: 75px; height: 75px;
+      width: 4.08rem; height: 4.08rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -413,7 +422,7 @@
     .links a:hover { border: 1px solid var(--accent); }
 
     .links a img {
-      width: 50px; height: 50px;
+      width: 2.72rem; height: 2.72rem;
       object-fit: contain;
       filter: brightness(0) invert(1);
       transition: filter 0.2s;
@@ -437,7 +446,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 2.5rem;
-      width: 100%; max-width: 320px;
+      width: 100%; max-width: 17.4rem;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
@@ -463,7 +472,7 @@
     }
 
     .apropos-avatar {
-      width: 80px; height: 80px;
+      width: 4.35rem; height: 4.35rem;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent2), var(--accent));
       display: flex;
@@ -596,7 +605,7 @@
 
     /* Bloc Profil */
     .apropos-block-profil .apropos-avatar {
-      width: 56px; height: 56px;
+      width: 3.04rem; height: 3.04rem;
       font-size: 1.5rem;
       margin-top: 0.3rem;
     }
@@ -683,7 +692,7 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 32px; height: 32px;
+      width: 1.74rem; height: 1.74rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 50%;
@@ -769,7 +778,7 @@
       text-decoration: none;
       background-color: var(--surface);
       border-radius: 8px;
-      width: 48px; height: 48px;
+      width: 2.6rem; height: 2.6rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -780,7 +789,7 @@
     .github-link:hover { border-color: var(--accent); }
 
     .github-link img {
-      width: 30px; height: 30px;
+      width: 1.63rem; height: 1.63rem;
       object-fit: contain;
       filter: brightness(0) invert(1);
       transition: filter 0.2s;
@@ -790,7 +799,7 @@
     }
 
     .projets-header h2 img {
-      width: 28px; height: 28px;
+      width: 1.52rem; height: 1.52rem;
       object-fit: contain;
       filter: brightness(0) invert(1);
       margin-left: 0.5rem;
@@ -825,7 +834,7 @@
     }
 
     .projet-card:hover  { border-color: var(--accent); }
-    .projet-card.dashed { border-style: dashed; background: transparent; align-items: center; justify-content: center; min-height: 140px; }
+    .projet-card.dashed { border-style: dashed; background: transparent; align-items: center; justify-content: center; min-height: 7.6rem; }
 
     .projet-tag   { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
     .projet-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--text); }
@@ -866,7 +875,7 @@
       font-size: 0.88rem;
       color: var(--muted);
       line-height: 1.7;
-      max-width: 620px;
+      max-width: 33.7rem;
     }
 
     .comp-main {
@@ -890,10 +899,10 @@
     /* --- Nid d'abeille des langages --- */
     .honeycomb { display: flex; flex-direction: column; align-items: center; }
     .hc-row { display: flex; gap: 0.7rem; justify-content: center; }
-    .hc-row + .hc-row { margin-top: -17px; }
+    .hc-row + .hc-row { margin-top: -0.92rem; }
 
     .lang-hex {
-      width: 88px; height: 100px;
+      width: 4.78rem; height: 5.43rem;
       clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
       background: linear-gradient(135deg, var(--accent2), var(--accent));
       display: flex; align-items: center; justify-content: center;
@@ -918,7 +927,7 @@
     .comp-cats {
       display: flex;
       flex-direction: column;
-      max-width: 400px;
+      max-width: 21.7rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -963,10 +972,10 @@
     /* --- Langues : échelle CECRL en hexagones --- */
     .lang-levels { display: flex; flex-direction: column; gap: 0.55rem; }
     .lang-level  { display: flex; align-items: center; gap: 0.8rem; }
-    .ll-name     { font-size: 0.85rem; color: var(--text); width: 72px; }
-    .ll-scale    { display: flex; gap: 4px; }
+    .ll-name     { font-size: 0.85rem; color: var(--text); width: 3.9rem; }
+    .ll-scale    { display: flex; gap: 0.22rem; }
     .ll-scale i {
-      width: 11px; height: 13px;
+      width: 0.6rem; height: 0.7rem;
       clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
       background: var(--border);
     }
@@ -991,7 +1000,7 @@
     a.contact-row:hover .contact-icon { border-color: var(--accent); color: var(--accent); }
 
     .contact-icon {
-      width: 36px; height: 36px;
+      width: 1.96rem; height: 1.96rem;
       border-radius: 6px;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1071,7 +1080,7 @@
        FOOTER
     ================================================================ */
     footer {
-      height: clamp(46px, 6.15vh, 60px);
+      height: var(--footer-h);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1094,7 +1103,7 @@
       position: fixed;
       left: 2rem; top: 50%;
       transform: translateY(-50%);
-      width: 1px; height: 120px;
+      width: 1px; height: 6.5rem;
       background: linear-gradient(to bottom, transparent, var(--accent), transparent);
       opacity: 0.4;
       z-index: 5;
@@ -1104,7 +1113,7 @@
     /* Hexagones du fond */
     .hexagon-bg {
       position: absolute;
-      width: 62px; height: 62px;
+      width: 3.37rem; height: 3.37rem;
       clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
       background: linear-gradient(135deg, var(--accent2), var(--accent));
       transition: background 1s ease, opacity 0.4s ease;

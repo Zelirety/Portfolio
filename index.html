@@ -396,8 +396,10 @@
     const hexBg = document.getElementById('hex-bg');
 
     // Espacement augmenté (44→55, 37→46) → ~36% d'hexagones en moins
-    const HEX_COL = 55;
-    const HEX_ROW = 46;
+    // Mis à l'échelle comme le reste du site (55px / 46px pour 1rem = 18.4px)
+    const REM_PX  = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const HEX_COL = 55 * REM_PX / 18.4;
+    const HEX_ROW = 46 * REM_PX / 18.4;
     for (let row = 0; row < Math.ceil(window.innerHeight / HEX_ROW); row++) {
       for (let col = 0; col < Math.ceil(window.innerWidth / HEX_COL) + 1; col++) {
         const hex = document.createElement('div');
@@ -656,8 +658,8 @@
       function step() {
         const card = row.querySelector('.experience-card');
         if (!card) return row.clientWidth;
-        // largeur d'une carte + le gap (0.7rem ≈ 11.2px)
-        return card.getBoundingClientRect().width + 11.2;
+        // largeur d'une carte + le gap (0.7rem)
+        return card.getBoundingClientRect().width + parseFloat(getComputedStyle(row).columnGap);
       }
 
       function update() {
